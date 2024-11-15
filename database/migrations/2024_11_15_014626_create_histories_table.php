@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('histories', function (Blueprint $table) {
             $table->id();
-            $table->string('browser');
-            $table->string('ip_address');
-            $table->timestamp('login_time')->nullable(false);
-            $table->timestamp('logout_time')->nullable();
+            $table->string('browser', 10);
+            $table->string('ip_address', 20);
+            $table->timestamp('time')->nullable(false);
+            $table->string('type')->nullable(false);
             $table->foreignId('user_id')->constrained('users');
         });
     }
