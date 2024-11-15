@@ -8,11 +8,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class History extends Model
 {
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'phone_number',
-        'address',
+        'browser',
+        'ip_address',
+        'login_time',
+        'logout_time',
     ];
 
     public function user(): BelongsTo
