@@ -53,8 +53,8 @@ class SessionController extends Controller
                 'time' => now(),
                 'type' => 'logout'
             ]);
-            DB::commit();
             Auth::logout();
+            DB::commit();
             return redirect()->route('home');
         } catch (\Exception $e) {
             DB::rollBack();

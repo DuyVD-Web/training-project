@@ -32,6 +32,7 @@ class AuthRequest extends FormRequest
             'password' => 'required'
         ];
     }
+
     protected function registerRules (): array
     {
         return [
@@ -39,6 +40,7 @@ class AuthRequest extends FormRequest
             'email' => 'required|email|unique:users',
             'password' => 'required|confirmed|min:6',];
     }
+
     protected function isRegisterRoute(): bool
     {
         return $this->routeIs('register.store') || $this->routeIs('register');
