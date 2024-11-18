@@ -2,27 +2,39 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AuthRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class RegisterUserController extends Controller
 {
-    public function index()
+    public function create()
     {
         return view('auth.register');
     }
-    public function store(Request $request)
+    public function store(AuthRequest $request)
     {
-        $userAttribute = $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|confirmed|min:6',
-        ]);
+        $validated = $request->validated();
 
-        $userAttribute['role'] = 'user';
+        try {
+            DB::beginTransaction();
 
-        $user = User::create($userAttribute);
+            $user = User::create([
+                'name' => $validated["name"],
+                'email' => $validated["email"],
+                'password' => Hash::make($validated["password"]),
+                'role' => 'user'
+            ]);
 
-        return redirect('/login');
+            DB::commit();
+            return redirect()->route('login')->with('success', 'Registration successful!');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withInput()->with('error', 'Registration failed.');
+        }
     }
 }

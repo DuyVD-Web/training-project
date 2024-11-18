@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AuthRequest;
 use App\Models\History;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class SessionController extends Controller
@@ -13,27 +15,50 @@ class SessionController extends Controller
         return view('auth.login');
     }
 
-    public function store()
+    public function store(AuthRequest $request)
     {
-        $attributes = request()->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
+        $attributes = $request->validated();
 
         if (! Auth::attempt($attributes)) {
             throw ValidationException::withMessages([
-                'email' => 'Sorry, those credentials do not match.',
+                'email' => 'Credentials do not match, please try again.',
             ]);
         }
-        request()->session()->regenerate();
-        History::create([
-            'ip_address' => request()->ip(),
-            'browser' => request()->header('User-Agent'),
-            'user_id' => Auth::id(),
-            'time' => now(),
-            'type' => 'login'
-        ]);
+        try {
+            DB::beginTransaction();
+            History::create([
+                'ip_address' => request()->ip(),
+                'browser' => request()->header('User-Agent'),
+                'user_id' => Auth::id(),
+                'time' => now(),
+                'type' => 'login'
+            ]);
+            DB::commit();
+            request()->session()->regenerate();
+            return redirect()->route('home');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withInput()->with('error', 'Login failed.');
+        }
+    }
 
-        return redirect('/');
+    public function destroy()
+    {
+        try {
+            DB::beginTransaction();
+            History::create([
+                'ip_address' => request()->ip(),
+                'browser' => request()->header('User-Agent'),
+                'user_id' => Auth::id(),
+                'time' => now(),
+                'type' => 'logout'
+            ]);
+            DB::commit();
+            Auth::logout();
+            return redirect()->route('home');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withInput()->with('error', 'Logout failed.');
+        }
     }
 }

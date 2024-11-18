@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('browser');
             $table->string('ip_address');
-            $table->timestamp('time')->nullable(false);
-            $table->string('type')->nullable(false);
+            $table->timestamp('time');
+            $table->string('type');
             $table->foreignId('user_id')->constrained('users');
         });
     }
