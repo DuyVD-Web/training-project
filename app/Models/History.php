@@ -7,11 +7,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class History extends Model
 {
+    public $timestamps = false;
     protected $fillable = [
         'browser',
         'ip_address',
-        'login_time',
-        'logout_time',
+        'time',
+        'user_id',
+        'type'
     ];
 
     public function user(): BelongsTo
