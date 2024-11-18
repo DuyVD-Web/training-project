@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\RegisterUserController;
 use App\Http\Controllers\SessionController;
+use App\Http\Controllers\UserInformationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -23,7 +24,11 @@ Route::middleware('guest')->group(function () {
     });
 });
 
-Route::get('/user/info', function () {
-    return view('user.info');
+Route::middleware('auth')->prefix('/user')->name('user')->group(function () {
+    Route::prefix('/info')->name('info')->group(function () {
+        Route::get('/', [UserInformationController::class, 'show']);
+        Route::post('/', [UserInformationController::class, 'update'])->name('update');
+        Route::post('/password', [UserInformationController::class, 'updatePassword'])->name('password');
+    });
 });
 
