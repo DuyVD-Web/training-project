@@ -30,7 +30,6 @@ class UserInformationController extends Controller
                 ->back()
                 ->with('error', 'Failed to update information. Please try again.');
         }
-
     }
 
     public function updatePassword(ChangePasswordRequest $request)
