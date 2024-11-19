@@ -9,7 +9,7 @@
     @vite('resources/css/app.css')
 </head>
 <body>
-    <header class='flex shadow-md py-4 px-4 sm:px-10 bg-white font-[sans-serif] min-h-[70px] tracking-wide fixed z-50 w-full top-0'>
+    <header class='flex shadow-md py-4 px-4 sm:px-10 bg-white font-[sans-serif] min-h-[70px] tracking-wide sticky z-50 w-full top-0'>
         <div class='flex flex-wrap items-center justify-between gap-5 w-full'>
             <a href="{{route('home')}}">
 {{--                <img src="https://readymadeui.com/readymadeui.svg" alt="logo" class='w-36' />--}}

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AuthRequest;
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -21,15 +22,15 @@ class RegisterUserController extends Controller
 
         try {
             DB::beginTransaction();
-
             $user = User::create([
                 'name' => $validated["name"],
                 'email' => $validated["email"],
                 'password' => Hash::make($validated["password"]),
                 'role' => 'user'
             ]);
-
             DB::commit();
+            event(new Registered($user));
+
             return redirect()->route('login')->with('success', 'Registration successful!');
 
         } catch (\Exception $e) {

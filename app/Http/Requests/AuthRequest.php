@@ -38,6 +38,6 @@ class AuthRequest extends FormRequest
 
     protected function isRegisterRoute(): bool
     {
-        return $this->routeIs('register.store') || $this->routeIs('register');
+        return $this->routeIs('registerstore') || $this->routeIs('register');
     }
 }

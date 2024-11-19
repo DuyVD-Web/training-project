@@ -2,7 +2,7 @@
 
     <x-user.side-bar>
     </x-user.side-bar>
-    <div class="grid grid-cols-4 mt-16 gap-6 py-10">
+    <div class="grid grid-cols-4 mt-6 gap-6 py-10">
         <form action="{{route('userinfoupdate')}}" class="col-start-2 col-end-4 relative" id="info-form" method="POST">
             @csrf
             <button id="editButton" type="button" class="absolute top-0 right-0 text-gray-500 hover:text-blue-700 focus:outline-none">
