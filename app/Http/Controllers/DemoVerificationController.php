@@ -37,16 +37,17 @@ class DemoVerificationController
 
         // Mark email as verified
         try {
+            DB::beginTransaction();
             $user->email_verified_at = Carbon::now();
             $user->save();
+            $verification->delete();
+            DB::commit();
+            return redirect()->route('dashboard')
+                ->with('success', 'Email verified successfully!');
         } catch (\Exception $e) {
+            DB::rollBack();
             return redirect()->route('verification.notice');
         }
-
-        $verification->delete();
-
-        return redirect()->route('dashboard')
-            ->with('success', 'Email verified successfully!');
     }
 
     public function sendVerification(Request $request)
