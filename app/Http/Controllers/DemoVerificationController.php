@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Models\EmailVerification;
-use App\Notification\DemoVerifyEmail;
+use App\Notifications\DemoVerifyEmail;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;

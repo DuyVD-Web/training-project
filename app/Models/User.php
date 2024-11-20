@@ -63,8 +63,8 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(EmailVerification::class);
     }
 
-    public function hasVerifiedEmail(): bool
+    public function changeEmailRequest(): HasOne
     {
-        return !is_null($this->email_verified_at);
+        return $this->hasOne(ChangeEmailRequest::class);
     }
 }

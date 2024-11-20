@@ -1,12 +1,11 @@
 <?php
 
+use App\Http\Controllers\ChangeEmailController;
 use App\Http\Controllers\DemoVerificationController;
 use App\Http\Controllers\RegisterUserController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\UserInformationController;
 use App\Http\Controllers\VerificationController;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -46,6 +45,11 @@ Route::middleware(['auth','verified'])->prefix('/user')->name('user')->group(fun
         Route::get('/', [UserInformationController::class, 'show']);
         Route::post('/', [UserInformationController::class, 'update'])->name('.update');
         Route::post('/password', [UserInformationController::class, 'updatePassword'])->name('.password');
+
+
+        Route::get('/email', [ChangeEmailController::class, 'index'])->name('.changeEmail');
+        Route::post('/email', [ChangeEmailController::class, 'sendChangeEmail'])->name('.sendChangeEmail');
+        Route::get('/email/verify/{token}', [ChangeEmailController::class, 'verifyChangeEmail'])->name('.verifyChangeEmail');
     });
 });
 
