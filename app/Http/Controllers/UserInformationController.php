@@ -23,7 +23,7 @@ class UserInformationController extends Controller
 
         try {
             Auth::user()->update($attributes);
-            return redirect()->route('userinfo');
+            return redirect()->route('user.info');
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return redirect()
@@ -41,7 +41,7 @@ class UserInformationController extends Controller
                 'password' => Hash::make($attributes['password'])
             ]);
             return redirect()
-                ->route('userinfo')
+                ->route('user.info')
                 ->with('success', 'Password updated successfully');
 
         } catch (\Exception $e) {

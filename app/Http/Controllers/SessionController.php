@@ -35,7 +35,7 @@ class SessionController extends Controller
             ]);
             DB::commit();
             request()->session()->regenerate();
-            return redirect()->route('userinfo');
+            return redirect()->route('dashboard');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->withInput()->with('error', 'Login failed.');
