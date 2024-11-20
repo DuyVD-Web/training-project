@@ -23,11 +23,11 @@ Route::middleware('auth')->group(function () {
 Route::middleware('guest')->group(function () {
     Route::prefix('register')->name('register')->group(function () {
         Route::get('/', [RegisterUserController::class, 'create']);
-        Route::post('/', [RegisterUserController::class, 'store'])->name('store');
+        Route::post('/', [RegisterUserController::class, 'store'])->name('.store');
     });
     Route::prefix('login')->name('login')->group(function () {
         Route::get('/', [SessionController::class, 'create']);
-        Route::post('/', [SessionController::class, 'store'])->name('store');
+        Route::post('/', [SessionController::class, 'store'])->name('.store');
     });
 });
 
@@ -41,10 +41,10 @@ Route::middleware('auth')->prefix('/email')->name('verification')->group(functio
 
 
 Route::middleware(['auth','verified'])->prefix('/user')->name('user')->group(function () {
-    Route::prefix('/info')->name('info')->group(function () {
+    Route::prefix('/info')->name('.info')->group(function () {
         Route::get('/', [UserInformationController::class, 'show']);
-        Route::post('/', [UserInformationController::class, 'update'])->name('update');
-        Route::post('/password', [UserInformationController::class, 'updatePassword'])->name('password');
+        Route::post('/', [UserInformationController::class, 'update'])->name('.update');
+        Route::post('/password', [UserInformationController::class, 'updatePassword'])->name('.password');
     });
 });
 

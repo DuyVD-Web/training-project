@@ -3,7 +3,7 @@
     <x-user.side-bar>
     </x-user.side-bar>
     <div class="grid grid-cols-4 mt-6 gap-6 py-10">
-        <form action="{{route('userinfoupdate')}}" class="col-start-2 col-end-4 relative" id="info-form" method="POST">
+        <form action="{{route('user.info.update')}}" class="col-start-2 col-end-4 relative" id="info-form" method="POST">
             @csrf
             <button id="editButton" type="button" class="absolute top-0 right-0 text-gray-500 hover:text-blue-700 focus:outline-none">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -39,7 +39,7 @@
             </button>
         </form>
         <div class=" col-start-2 col-end-4 h-[2px] bg-gray-300"></div>
-        <form action="/user/info/password" class="col-start-2 col-end-4 " method="post">
+        <form action="{{route('user.info.password')}}" class="col-start-2 col-end-4 " method="post">
             @csrf
             <h3 class="mb-4 text-lg font-medium leading-none text-gray-900 dark:text-white">Change Password</h3>
             <div class="flex w-[75%] gap-4 mb-4 flex-col">
