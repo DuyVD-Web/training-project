@@ -10,7 +10,6 @@ class ChangeEmailRequest extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'old_email',
         'new_email',
         'token',
         'expires_at',

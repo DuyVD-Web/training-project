@@ -24,14 +24,11 @@ class ChangeEmailController extends Controller
 
         try {
             DB::beginTransaction();
-            ChangeEmailModel::where('old_email', $request->email)->delete();
-            $changeRequest = ChangeEmailModel::create([
-                'user_id' => $user->id,
+            $changeRequest = ChangeEmailModel::updateOrCreate(['user_id' => $user->id], [
                 'new_email' => $request->email,
-                'old_email' => $user->email,
                 'token' => Str::random(64),
                 'expires_at' => Carbon::now()->addMinutes(10),
-            ]);
+                ]);
             DB::commit();
             $user->notify(new ChangeEmailNotification($changeRequest->token, $changeRequest->new_email));
             return back()->with('success', 'Request link sent!');

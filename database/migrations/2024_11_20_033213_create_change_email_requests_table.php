@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('change_email_requests', function (Blueprint $table) {
             $table->id();
-            $table->string('old_email');
             $table->string('new_email');
             $table->string('token');
             $table->timestamp('expires_at');

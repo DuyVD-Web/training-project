@@ -38,7 +38,7 @@ class ChangeEmailNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $url = route('user.info.verifyChan  geEmail', ['token' => $this->token]);
+        $url = route('user.info.verifyChangeEmail', ['token' => $this->token]);
 
         return (new MailMessage)
             ->subject('Verify Email Change')
