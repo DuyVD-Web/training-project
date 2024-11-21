@@ -39,6 +39,11 @@
             </button>
         </form>
         <div class=" col-start-2 col-end-4 h-[2px] bg-gray-300"></div>
+        <div class="col-start-2">
+            <a href="{{route('user.info.changeEmail')}}" class="px-3 py-2 rounded bg-blue-700 text-white"> Change email</a>
+        </div>
+
+        <div class=" col-start-2 col-end-4 h-[2px] bg-gray-300"></div>
         <form action="{{route('user.info.password')}}" class="col-start-2 col-end-4 " method="post">
             @csrf
             <h3 class="mb-4 text-lg font-medium leading-none text-gray-900 dark:text-white">Change Password</h3>

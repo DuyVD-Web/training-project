@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Models\EmailVerification;
-use App\Notification\DemoVerifyEmail;
+use App\Notifications\DemoVerifyEmail;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -56,15 +56,10 @@ class DemoVerificationController
 
         try {
             DB::beginTransaction();
-            EmailVerification::where('user_id', $user->id)->delete();
-            $verification = EmailVerification::create([
-                'user_id' => $user->id,
-                'token' => Str::random(64),
-                'expires_at' => Carbon::now()->addMinutes(5),
-            ]);
+            $verification = EmailVerification::updateOrCreate(['user_id' => $user->id],
+                ['token' => Str::random(40), 'expires_at' => Carbon::now()->addMinutes(5),]);
             DB::commit();
             $user->notify(new DemoVerifyEmail($verification->token));
-
             return back()->with('success', 'Verification link sent!');
         } catch (\Exception $e) {
             DB::rollBack();
