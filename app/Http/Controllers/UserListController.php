@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 
 class UserListController extends Controller
@@ -25,7 +24,7 @@ class UserListController extends Controller
         try {
             $user->delete();
             return redirect()->route('admin.users');
-        } catch (QueryException $e) {
+        } catch (\Exception $e) {
             return redirect()->route('admin.users')->with('error', $e->getMessage());
         }
     }

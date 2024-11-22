@@ -13,6 +13,6 @@ class AdminMiddleware
         if (auth()->check() && auth()->user()->role === 'admin') {
             return $next($request);
         }
-        abort(Response::HTTP_NOT_FOUND);
+        abort(Response::HTTP_FORBIDDEN);
     }
 }
