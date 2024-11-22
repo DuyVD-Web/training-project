@@ -2,8 +2,9 @@
     <x-admin.side-bar></x-admin.side-bar>
     <div class="grid grid-cols-12 text-gray-900 bg-gray-200 h-[90vh]">
         <div class="col-start-3 col-end-12">
-            <div class="p-4 flex">
+            <div class="p-4 flex justify-between">
                 <h1 class="text-3xl">Users</h1>
+                <a href="{{route('admin.users.showCreateForm')}}" class="rounded bg-blue-700 text-white px-3 py-1">New user</a>
             </div>
             <div class="px-3 py-4 flex flex-col justify-between h-3/4">
                 <table class="w-full text-md bg-white shadow-md rounded mb-4">

@@ -75,5 +75,9 @@ Route::middleware('auth')->prefix('/demo')->name('demo')->group(function () {
 Route::middleware(['auth', AdminMiddleware::class])->prefix('/admin')->name('admin')->group(function () {
     Route::get('/users',[UserListController::class,'index'])->name('.users');
     Route::delete('/users/{user}',[UserListController::class,'delete'])->name('.users.delete');
+
+    Route::get('/users/create',[UserListController::class,'showCreateForm'])->name('.users.showCreateForm');
+    Route::post('/users/create',[UserListController::class,'create'])->name('.users.create');
 });
+
 

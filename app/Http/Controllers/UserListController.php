@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+
 
 class UserListController extends Controller
 {
@@ -26,6 +29,27 @@ class UserListController extends Controller
             return redirect()->route('admin.users');
         } catch (\Exception $e) {
             return redirect()->route('admin.users')->with('error', $e->getMessage());
+        }
+    }
+
+    public function showCreateForm(){
+        return view('admin.add-user');
+    }
+
+    public function create(CreateUserRequest $request){
+        $validated = $request->validated();
+        try {
+            User::create([
+                'name' => $validated["name"],
+                'email' => $validated["email"],
+                'password' => Hash::make($validated["password"]),
+                'role' => $validated["role"],
+                'phone_number' => $validated["phone_number"],
+                'address' => $validated["address"],
+            ]);
+            return redirect()->route('admin.users');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.users.showCreateForm')->with('error', $e->getMessage());
         }
     }
 }
