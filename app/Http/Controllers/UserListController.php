@@ -14,6 +14,14 @@ class UserListController extends Controller
     {
 
         $query = User::query();
+
+        if ($request->has('search_query')) {
+            $query->where(function ($query) use ($request) {
+                $query->where('name', 'LIKE', '%'. $request->search_query .'%')
+                    ->orWhere('email', 'LIKE', '%'. $request->search_query .'%');
+            });
+        }
+
         if ($request->has('roles')) {
             $query->whereIn('role', $request->roles);
         }
@@ -24,13 +32,15 @@ class UserListController extends Controller
 
         $field = $request->input('field', 'name');
         $sort = $request->input('sort', 'asc');
+        $search = $request->input('search_query', '');
         $query->orderBy($field, $sort);
 
         $users = $query->paginate(6);
         return view('admin.user-list', [
             'users' => $users,
             'field' => $field,
-            'sort' => $sort
+            'sort' => $sort,
+            'search' => $search,
         ]);
     }
 

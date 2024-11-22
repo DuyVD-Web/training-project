@@ -6,7 +6,7 @@
                 <h1 class="text-3xl">Users</h1>
             </div>
 
-            <div class="p-4 flex justify-between items-end">
+            <div class="p-4 flex justify-between items-center">
                 <div class="flex items-center border-2 border-gray-500 bg-white w-fit ml-4 p-4 shadow-md">
                     <input id="admin" name="roles[]" type="checkbox" value="admin"
                            {{ in_array('admin', request('roles', [])) ? 'checked' : '' }}
@@ -23,6 +23,21 @@
                            class="ml-3 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
                     <label for="verified" class="ms-2 text-sm font-medium text-gray-900">Verified</label>
                 </div>
+
+                <form class="w-[400px]" action="" method="get">
+                    <label for="search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                            </svg>
+                        </div>
+                        <input type="search" id="search" name="search_query" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search users..." value="{{ $search }}" />
+                        <button id="searchBtn" type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
+                    </div>
+                </form>
+
+
                 <a href="{{route('admin.users.showCreateForm')}}" class="rounded bg-blue-700 text-center text-white px-3 h-full py-2 ">New user</a>
             </div>
 
@@ -150,11 +165,14 @@
                             newParams.set('verified', '1');
                         }
 
-                        // Preserve current sorting
+                        // Preserve current sorting and query
                         const currentParams = new URLSearchParams(window.location.search);
                         if (currentParams.has('field') && currentParams.has('sort')) {
                             newParams.set('field', currentParams.get('field'));
                             newParams.set('sort', currentParams.get('sort'));
+                        }
+                        if (currentParams.has('search_query')) {
+                            newParams.set('search_query', currentParams.get('search_query'));
                         }
 
                         window.location.href = `{{route("admin.users")}}?${newParams.toString()}`;
@@ -174,12 +192,14 @@
 
                         newParams.set('field', field);
                         newParams.set('sort', sort);
-                        
+
                         newParams.delete('page');
 
                         window.location.href = `{{route("admin.users")}}?${newParams.toString()}`;
                     });
                 });
+
+
             });
         </script>
     @endpush
