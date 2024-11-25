@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\EditUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -72,5 +73,25 @@ class UserListController extends Controller
         } catch (\Exception $e) {
             return redirect()->route('admin.users.showCreateForm')->with('error', $e->getMessage());
         }
+    }
+
+    public function showEdit(User $user){
+        return view('admin.edit-user', ['user' => $user]);
+    }
+
+    public function update(EditUserRequest $request, User $user)
+    {
+        $validated = $request->validated();
+        try {
+            User::where('id', $user->id)->update([
+                'name' => $validated["name"],
+                'phone_number' => $validated["phone_number"],
+                'address' => $validated["address"],
+                'role' => $validated["role"],
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->route('admin.users.showEdit', $user)->with('error', $e->getMessage());
+        }
+        return redirect()->route('admin.users.showEdit', $user);
     }
 }

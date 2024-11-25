@@ -78,6 +78,9 @@ Route::middleware(['auth', AdminMiddleware::class])->prefix('/admin')->name('adm
 
     Route::get('/users/create',[UserListController::class,'showCreateForm'])->name('.users.showCreateForm');
     Route::post('/users/create',[UserListController::class,'create'])->name('.users.create');
+
+    Route::get('/users/{user}',[UserListController::class,'showEdit'])->name('.users.showEdit');
+    Route::post('/users/{user}',[UserListController::class,'update'])->name('.users.update');
 });
 
 

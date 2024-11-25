@@ -112,7 +112,7 @@
                                        class="text-sm bg-red-500 hover:bg-red-700 text-white py-1 px-2 rounded focus:outline-none focus:shadow-outline">Delete
                                     </button>
                                 </form>
-                                <a href="#"
+                                <a href="{{route('admin.users.showEdit', $user)}}"
                                    class="text-sm bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded focus:outline-none focus:shadow-outline">
                                     Edit
                                 </a>
