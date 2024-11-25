@@ -19,8 +19,15 @@ class EditInfoRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'phone_number' => 'numeric',
+            'phone_number' => ['regex:/^(((\+|)84)|0)(3|5|7|8|9)+([0-9]{8})\b/'],
             'address' => 'string',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'phone_number.regex' => 'The phone number must be a valid Vietnamese phone number.'
         ];
     }
 }

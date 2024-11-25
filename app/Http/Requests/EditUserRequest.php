@@ -26,9 +26,16 @@ class EditUserRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'phone_number' => 'numeric|nullable',
+            'phone_number' => ['regex:/^(((\+|)84)|0)(3|5|7|8|9)+([0-9]{8})\b/'],
             'role' => ['required', 'string', 'in:admin,user'],
             'address' => 'string|max:255|nullable',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'phone_number.regex' => 'The phone number must be a valid Vietnamese phone number.'
         ];
     }
 }

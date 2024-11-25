@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-admin.side-bar></x-admin.side-bar>
-    <div class="grid grid-cols-12 text-gray-900 bg-gray-200 h-[90vh]">
+    <div class="grid grid-cols-12 text-gray-900 bg-gray-200 min-h-[calc(100vh-71px)]">
         <div class="col-start-3 col-end-12">
             <div class="p-4 flex justify-between">
                 <h1 class="text-3xl">Users</h1>
@@ -104,18 +104,20 @@
                                 {{$user->address}}
                             </td>
                             <td class="p-3 px-5 flex justify-end gap-3">
-                                <form action="{{route('admin.users.delete', $user)}}" method="post"
-                                      onsubmit="return confirm('Are you sure you want to delete this user?');">
-                                    @method('DELETE')
-                                    @csrf
-                                    <button
-                                       class="text-sm bg-red-500 hover:bg-red-700 text-white py-1 px-2 rounded focus:outline-none focus:shadow-outline">Delete
-                                    </button>
-                                </form>
-                                <a href="{{route('admin.users.showEdit', $user)}}"
-                                   class="text-sm bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded focus:outline-none focus:shadow-outline">
-                                    Edit
-                                </a>
+                                @if($user->role !== 'admin')
+                                    <form action="{{route('admin.users.delete', $user)}}" method="post"
+                                          onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                        @method('DELETE')
+                                        @csrf
+                                        <button
+                                           class="text-sm bg-red-500 hover:bg-red-700 text-white py-1 px-2 rounded focus:outline-none focus:shadow-outline">Delete
+                                        </button>
+                                    </form>
+                                    <a href="{{route('admin.users.showEdit', $user)}}"
+                                       class="text-sm bg-blue-500 hover:bg-blue-700 text-white py-1 px-2 rounded focus:outline-none focus:shadow-outline">
+                                        Edit
+                                    </a>
+                                @endif
                             </td>
                         </tr>
                     @endforeach

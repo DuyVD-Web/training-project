@@ -7,9 +7,12 @@
             <div class="flex gap-4 mb-4 flex-col">
                 <div class="flex justify-between">
                     <div class=" w-[45%]">
-                        <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Username</label>
+                        <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name *</label>
                         <input type="text" name="name" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                value="{{$user->name}}" >
+                        @error('name')
+                        <div class="text-red-400 m-0">{{$message}}</div>
+                        @enderror
                     </div>
                     <div class="w-[45%]">
                         <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email
@@ -29,6 +32,9 @@
                         <label for="phone_number" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone number</label>
                         <input type="number" name="phone_number" id="phone_number" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 value="{{$user->phone_number}}" >
+                        @error('phone_number')
+                        <div class="text-red-400 m-0">{{$message}}</div>
+                        @enderror
                     </div>
 
 

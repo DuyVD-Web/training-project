@@ -24,11 +24,18 @@ class CreateUserRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6',
-            'phone_number' => 'numeric',
+            'email' => 'required|email:rfc,dns|unique:users,email',
+            'password' => 'required|min:6|confirmed',
+            'phone_number' => ['regex:/^(((\+|)84)|0)(3|5|7|8|9)+([0-9]{8})\b/'],
             'address' => 'string',
             'role' => 'string',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'phone_number.regex' => 'The phone number must be a valid Vietnamese phone number.'
         ];
     }
 }

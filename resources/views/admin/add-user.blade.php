@@ -7,31 +7,49 @@
         <div class="flex gap-4 mb-4 flex-col">
             <div class="flex justify-between">
                 <div class=" w-[45%]">
-                    <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Username</label>
+                    <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name *</label>
                     <input  type="text" name="name" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value="" >
+                    @error('name')
+                        <div class="text-red-400 m-0">{{$message}}</div>
+                    @enderror
                 </div>
                 <div class="w-[45%]">
-                    <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
+                    <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email *</label>
                     <input  type="email" name="email" id="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value="" >
+                    @error('email')
+                        <div class="text-red-400 m-0">{{$message}}</div>
+                    @enderror
                 </div>
             </div>
             <div class="flex justify-between">
                 <div class="w-[45%]">
-                    <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
+                    <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password *</label>
                     <input  type="password" name="password" id="password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value="">
+                    @error('password')
+                        <div class="text-red-400 m-0">{{$message}}</div>
+                    @enderror
                 </div>
                 <div class="w-[45%]">
                     <label for="phone_number" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone number</label>
                     <input  type="number" name="phone_number" id="phone_number" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value="" >
+                    @error('phone_number')
+                    <div class="text-red-400 m-0">{{$message}}</div>
+                    @enderror
                 </div>
             </div>
-            <div class="w-[45%]">
-                <label for="role" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Role</label>
-                <select id="role" name="role" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                    @foreach((new \ReflectionClass(\App\UserRole::class))->getConstants() as $key => $value)
-                        <option value="{{ $value }}">{{ $key }}</option>
-                    @endforeach
-                </select>
+            <div class="flex justify-between">
+                <div class="w-[45%]">
+                    <label for="password_confirmation" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password Confirmation *</label>
+                    <input  type="password" name="password_confirmation" id="password_confirmation" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" value="">
+                </div>
+                <div class="w-[45%]">
+                    <label for="role" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Role</label>
+                    <select id="role" name="role" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        @foreach((new \ReflectionClass(\App\UserRole::class))->getConstants() as $key => $value)
+                            <option value="{{ $value }}">{{ $key }}</option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
             <div>
                 <label for="address" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Address</label>
