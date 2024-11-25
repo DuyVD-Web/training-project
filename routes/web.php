@@ -5,7 +5,9 @@ use App\Http\Controllers\DemoVerificationController;
 use App\Http\Controllers\RegisterUserController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\UserInformationController;
+use App\Http\Controllers\UserListController;
 use App\Http\Controllers\VerificationController;
+use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -67,4 +69,15 @@ Route::middleware('auth')->prefix('/demo')->name('demo')->group(function () {
         ->middleware(['throttle:6,1'])
         ->name('.verification.send');
 });
+
+
+// Admin
+Route::middleware(['auth', AdminMiddleware::class])->prefix('/admin')->name('admin')->group(function () {
+    Route::get('/users',[UserListController::class,'index'])->name('.users');
+    Route::delete('/users/{user}',[UserListController::class,'delete'])->name('.users.delete');
+
+    Route::get('/users/create',[UserListController::class,'showCreateForm'])->name('.users.showCreateForm');
+    Route::post('/users/create',[UserListController::class,'create'])->name('.users.create');
+});
+
 
