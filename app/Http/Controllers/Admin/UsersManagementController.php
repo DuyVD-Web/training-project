@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\EditUserRequest;
+use App\Http\Requests\UsersImportRequest;
 use App\Imports\UsersImport;
 use App\Jobs\ProcessImportUsers;
 use App\Models\User;
@@ -103,12 +104,10 @@ class UsersManagementController extends Controller
         }
     }
 
-    public function import(Request $request)
+    public function import(UsersImportRequest $request)
     {
         try {
-            $request->validate([
-                'file' => 'required|max:2048|mimes:xlsx,xls,csv',
-            ]);
+            $request->validated();
             $path = $request->file('file')->store('imports');
 
             ProcessImportUsers::dispatch($path);
