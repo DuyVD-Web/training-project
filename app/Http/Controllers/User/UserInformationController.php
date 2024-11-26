@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\User;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\EditInfoRequest;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -23,7 +23,7 @@ class UserInformationController extends Controller
 
         try {
             Auth::user()->update($attributes);
-            return redirect()->route('user.info');
+            return redirect()->route('user.info')->with('success', 'Update successfully');
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return redirect()

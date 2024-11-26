@@ -1,15 +1,23 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\EditUserRequest;
+use App\Imports\UsersImport;
+use App\Jobs\ProcessImportUsers;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Validators\ValidationException;
 
 
-class UserListController extends Controller
+class UsersManagementController extends Controller
 {
     public function index(Request $request)
     {
@@ -48,7 +56,7 @@ class UserListController extends Controller
     public function delete(User $user){
         try {
             $user->delete();
-            return redirect()->route('admin.users');
+            return redirect()->back()->with('success', 'User has been deleted');
         } catch (\Exception $e) {
             return redirect()->route('admin.users')->with('error', $e->getMessage());
         }
@@ -69,7 +77,7 @@ class UserListController extends Controller
                 'phone_number' => $validated["phone_number"],
                 'address' => $validated["address"],
             ]);
-            return redirect()->route('admin.users');
+            return redirect()->route('admin.users')->with('success', 'User has been created');
         } catch (\Exception $e) {
             return redirect()->route('admin.users.showCreateForm')->with('error', $e->getMessage());
         }
@@ -89,9 +97,28 @@ class UserListController extends Controller
                 'address' => $validated["address"],
                 'role' => $validated["role"],
             ]);
+            return redirect()->route('admin.users.showEdit', $user)->with('success', 'User has been updated');
         } catch (\Exception $e) {
             return redirect()->route('admin.users.showEdit', $user)->with('error', $e->getMessage());
         }
-        return redirect()->route('admin.users.showEdit', $user);
+    }
+
+    public function import(Request $request)
+    {
+        try {
+            $request->validate([
+                'file' => 'required|max:2048|mimes:xlsx,xls,csv',
+            ]);
+            $path = $request->file('file')->store('imports');
+
+            ProcessImportUsers::dispatch($path);
+
+            return redirect()->route('admin.users')
+                ->with('success', 'Importing users.');
+        } catch (\Exception) {
+            return redirect()->route('admin.users')
+                ->with('error', 'Import failed.');
+        }
+
     }
 }
