@@ -67,4 +67,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasOne(ChangeEmailRequest::class);
     }
+
+    public function importRequests(): HasMany
+    {
+        return $this->hasMany(ImportStatus::class);
+    }
 }

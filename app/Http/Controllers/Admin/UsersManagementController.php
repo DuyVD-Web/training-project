@@ -2,20 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\ImportStatus as Status;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\EditUserRequest;
 use App\Http\Requests\UsersImportRequest;
-use App\Imports\UsersImport;
 use App\Jobs\ProcessImportUsers;
+use App\Models\ImportStatus;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
-use Maatwebsite\Excel\Facades\Excel;
-use Maatwebsite\Excel\Validators\ValidationException;
+use Illuminate\Support\Facades\Auth;
+
 
 
 class UsersManagementController extends Controller
@@ -98,14 +95,17 @@ class UsersManagementController extends Controller
             $request->validated();
             $path = $request->file('file')->store('imports');
 
-            ProcessImportUsers::dispatch($path);
+            $importId = ImportStatus::create([
+                'status' => Status::Pending,
+                'user_id' => Auth::id(),
+            ]);
+            ProcessImportUsers::dispatch($path, $importId->id);
 
             return redirect()->route('admin.users')
-                ->with('success', 'Importing users.');
+                ->with('success', "Importing users. Please go to Import's status to check result.");
         } catch (\Exception) {
             return redirect()->route('admin.users')
                 ->with('error', 'Import failed.');
         }
-
     }
 }

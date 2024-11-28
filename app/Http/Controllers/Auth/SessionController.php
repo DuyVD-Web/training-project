@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthRequest;
 use App\Models\History;
@@ -36,6 +37,9 @@ class SessionController extends Controller
             ]);
             DB::commit();
             request()->session()->regenerate();
+            if (Auth::user()->role == UserRole::Admin) {
+                return redirect()->route('admin.users');
+            }
             return redirect()->route('dashboard');
         } catch (\Exception $e) {
             DB::rollBack();

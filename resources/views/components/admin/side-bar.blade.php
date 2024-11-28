@@ -7,6 +7,12 @@
             </a>
         </li>
         <li>
+            <a href="{{route('admin.importStatus')}}"
+               class="text-black hover:text-blue-600 text-[15px] block hover:bg-blue-50 rounded px-4 py-2.5 transition-all">
+                Import's status
+            </a>
+        </li>
+        <li>
             <a href="#"
                class="text-black hover:text-blue-600 text-[15px] block hover:bg-blue-50 rounded px-4 py-2.5 transition-all">
                 User's Activity
