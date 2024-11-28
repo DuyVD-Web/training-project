@@ -95,11 +95,11 @@ class UsersManagementController extends Controller
             $request->validated();
             $path = $request->file('file')->store('imports');
 
-            $importId = ImportStatus::create([
+            $import = ImportStatus::create([
                 'status' => Status::Pending,
                 'user_id' => Auth::id(),
             ]);
-            ProcessImportUsers::dispatch($path, $importId->id);
+            ProcessImportUsers::dispatch($path, $import->id);
 
             return redirect()->route('admin.users')
                 ->with('success', "Importing users. Please go to Import's status to check result.");

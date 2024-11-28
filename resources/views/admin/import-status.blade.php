@@ -41,8 +41,6 @@
                 let pageSize = 6;
                 let currentPage = 1;
 
-
-
                 async function fetchData() {
                     try {
                         const response = await fetch(apiUrl2, {
@@ -52,10 +50,7 @@
                             },
                         });
                         importStatus = await response.json()
-                        // console.log(data);
-                        //
-                        // importStatus = data.data;
-                        // console.log(importStatus);
+
                         if (!response.ok) {
                             console.error('Error fetching import statuses:', data.error);
                             return;
@@ -74,8 +69,6 @@
 
                     const start = (currentPage - 1) * pageSize
                     const end = start + pageSize
-
-                    console.log(importStatus);
 
                     const paginatedData = importStatus.slice(start, end)
 
@@ -135,8 +128,7 @@
                         hour12: true
                     });
                 }
-
-
+                
                 fetchData();
 
                 setInterval(fetchData, 5000);
