@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\AccessType;
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthRequest;
@@ -9,6 +10,7 @@ use App\Models\History;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Jenssegers\Agent\Facades\Agent;
 
 class SessionController extends Controller
 {
@@ -30,10 +32,12 @@ class SessionController extends Controller
             DB::beginTransaction();
             History::create([
                 'ip_address' => request()->ip(),
-                'browser' => request()->header('User-Agent'),
+                'browser' =>  Agent::browser(),
+                'platform' => Agent::platform(),
+                'device' => Agent::device(),
                 'user_id' => Auth::id(),
                 'time' => now(),
-                'type' => 'login'
+                'type' => AccessType::Login,
             ]);
             DB::commit();
             request()->session()->regenerate();
@@ -53,10 +57,12 @@ class SessionController extends Controller
             DB::beginTransaction();
             History::create([
                 'ip_address' => request()->ip(),
-                'browser' => request()->header('User-Agent'),
+                'browser' =>  Agent::browser(),
+                'platform' => Agent::platform(),
+                'device' => Agent::device(),
                 'user_id' => Auth::id(),
                 'time' => now(),
-                'type' => 'logout'
+                'type' => AccessType::Logout,
             ]);
             Auth::logout();
             DB::commit();
