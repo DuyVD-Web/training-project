@@ -32,7 +32,7 @@ class AuthRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'email' => 'required|email|unique:users',
+            'email' => 'required|email:rfc,dns|unique:users',
             'password' => 'required|confirmed|min:6',];
     }
 

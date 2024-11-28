@@ -1,12 +1,12 @@
 <?php
 
-use App\Http\Controllers\ChangeEmailController;
+use App\Http\Controllers\Admin\UsersManagementController;
+use App\Http\Controllers\Auth\RegisterUserController;
+use App\Http\Controllers\Auth\SessionController;
 use App\Http\Controllers\DemoVerificationController;
-use App\Http\Controllers\RegisterUserController;
-use App\Http\Controllers\SessionController;
-use App\Http\Controllers\UserInformationController;
-use App\Http\Controllers\UserListController;
-use App\Http\Controllers\VerificationController;
+use App\Http\Controllers\User\ChangeEmailController;
+use App\Http\Controllers\User\UserInformationController;
+use App\Http\Controllers\User\VerificationController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
 
@@ -73,11 +73,17 @@ Route::middleware('auth')->prefix('/demo')->name('demo')->group(function () {
 
 // Admin
 Route::middleware(['auth', AdminMiddleware::class])->prefix('/admin')->name('admin')->group(function () {
-    Route::get('/users',[UserListController::class,'index'])->name('.users');
-    Route::delete('/users/{user}',[UserListController::class,'delete'])->name('.users.delete');
+    Route::get('/users',[UsersManagementController::class,'index'])->name('.users');
+    Route::delete('/users/{user}',[UsersManagementController::class,'delete'])->name('.users.delete');
 
-    Route::get('/users/create',[UserListController::class,'showCreateForm'])->name('.users.showCreateForm');
-    Route::post('/users/create',[UserListController::class,'create'])->name('.users.create');
+    Route::get('/users/create',[UsersManagementController::class,'showCreateForm'])->name('.users.showCreateForm');
+    Route::post('/users/create',[UsersManagementController::class,'create'])->name('.users.create');
+
+    Route::get('/users/{user}',[UsersManagementController::class,'showEdit'])->name('.users.showEdit');
+    Route::post('/users/{user}',[UsersManagementController::class,'update'])->name('.users.update');
+
+    Route::put('/users/import',[UsersManagementController::class,'import'])->name('.users.import');
+
 });
 
 

@@ -21,7 +21,7 @@ class ChangeEmailRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['email','required','unique:users,email','different:'. Auth::user()->email],
+            'email' => ['email:rfc,dns','required','unique:users,email','different:'. Auth::user()->email],
             'password' => ['required', 'string'],
         ];
     }

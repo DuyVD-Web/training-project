@@ -2,17 +2,18 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\UserRole;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class CreateUserRequest extends FormRequest
+class EditUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return Auth::user()->role === 'admin';
+        return Auth::user()->role === UserRole::Admin;
     }
 
     /**
@@ -23,12 +24,10 @@ class CreateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
-            'email' => 'required|email:rfc,dns|unique:users,email',
-            'password' => 'required|min:6|confirmed',
+            'name' => 'required|string|max:255',
             'phone_number' => ['regex:/^(((\+|)84)|0)(3|5|7|8|9)+([0-9]{8})\b/'],
-            'address' => 'string',
-            'role' => 'string',
+            'role' => ['required', 'string', 'in:admin,user'],
+            'address' => 'string|max:255|nullable',
         ];
     }
 
