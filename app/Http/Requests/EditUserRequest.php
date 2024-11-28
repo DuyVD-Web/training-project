@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\UserRole;
+use App\Enums\UserRole;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
 
 class EditUserRequest extends FormRequest
 {
@@ -14,7 +13,7 @@ class EditUserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return Auth::user()->role === 'admin';
+        return Auth::user()->role === UserRole::Admin;
     }
 
     /**

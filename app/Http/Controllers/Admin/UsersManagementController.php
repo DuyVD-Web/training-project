@@ -70,14 +70,7 @@ class UsersManagementController extends Controller
     public function create(CreateUserRequest $request){
         $validated = $request->validated();
         try {
-            User::create([
-                'name' => $validated["name"],
-                'email' => $validated["email"],
-                'password' => Hash::make($validated["password"]),
-                'role' => $validated["role"],
-                'phone_number' => $validated["phone_number"],
-                'address' => $validated["address"],
-            ]);
+            User::create($validated);
             return redirect()->route('admin.users')->with('success', 'User has been created');
         } catch (\Exception $e) {
             return redirect()->route('admin.users.showCreateForm')->with('error', $e->getMessage());
@@ -92,12 +85,7 @@ class UsersManagementController extends Controller
     {
         $validated = $request->validated();
         try {
-            User::where('id', $user->id)->update([
-                'name' => $validated["name"],
-                'phone_number' => $validated["phone_number"],
-                'address' => $validated["address"],
-                'role' => $validated["role"],
-            ]);
+            User::where('id', $user->id)->update($validated);
             return redirect()->route('admin.users.showEdit', $user)->with('success', 'User has been updated');
         } catch (\Exception $e) {
             return redirect()->route('admin.users.showEdit', $user)->with('error', $e->getMessage());

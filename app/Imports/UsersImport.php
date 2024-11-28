@@ -6,17 +6,18 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
 
-class UsersImport implements ToModel, WithHeadingRow, WithValidation
+class UsersImport implements ToModel, WithHeadingRow, WithValidation, WithChunkReading
 {
     /**
-    * @param array $row
-    *
-    * @return Model|null
-    */
-    public function model(array $row): Model|User|null
+     * @param array $row
+     *
+     * @return User
+     */
+    public function model(array $row): User
     {
             return new User([
             'name' => $row["name"],
@@ -36,7 +37,12 @@ class UsersImport implements ToModel, WithHeadingRow, WithValidation
             'password' => 'required',
             'phone_number' => ['regex:/^(((\+|)84)|0)(3|5|7|8|9)+([0-9]{8})\b/','nullable'],
             'address' => 'string|nullable',
-            'role' => 'string|required',
+            'role' => 'string|required|in:admin,user',
         ];
+    }
+
+    public function chunkSize(): int
+    {
+        return 500;
     }
 }

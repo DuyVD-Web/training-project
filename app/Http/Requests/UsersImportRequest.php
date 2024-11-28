@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\UserRole;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,7 +13,7 @@ class UsersImportRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return Auth::user()->role == 'admin';
+        return Auth::user()->role == UserRole::Admin;
     }
 
     /**
