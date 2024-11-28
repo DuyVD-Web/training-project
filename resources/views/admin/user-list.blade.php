@@ -271,6 +271,19 @@
                         }, 500);
                     }, 3000);
                 }
+
+                const toastDanger = document.getElementById('toast-danger');
+                if (toastDanger) {
+                    toastDanger.querySelector('button').addEventListener('click', ()=> {
+                        toastDanger.remove();
+                    })
+                    setTimeout(() => {
+                        toastDanger.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+                        setTimeout(() => {
+                            toastDanger.remove();
+                        }, 500);
+                    }, 3000);
+                }
             });
         </script>
     @endpush

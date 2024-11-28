@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ImportStatusController;
 use App\Http\Controllers\Admin\UsersManagementController;
 use App\Http\Controllers\Auth\RegisterUserController;
 use App\Http\Controllers\Auth\SessionController;
@@ -83,7 +84,9 @@ Route::middleware(['auth', AdminMiddleware::class])->prefix('/admin')->name('adm
     Route::post('/users/{user}',[UsersManagementController::class,'update'])->name('.users.update');
 
     Route::put('/users/import',[UsersManagementController::class,'import'])->name('.users.import');
+    Route::get('/import-status', [ImportStatusController::class, 'index'])->name('.importStatus');
 
 });
 
+Route::get('/admin/api/import-status', [ImportStatusController::class, 'getImportStatus']);
 
