@@ -10,6 +10,7 @@ class AccessHistoryController
 {
     public function index(Request $request)
     {
+        define("App\Http\Controllers\User\HISTORY_PAGINATE", 6);
         $years = History::selectRaw('DISTINCT EXTRACT(YEAR FROM "time"::timestamp) as year')
             ->orderBy('year', 'desc')
             ->pluck('year');
@@ -17,34 +18,30 @@ class AccessHistoryController
         $query = History::query();
         $query->where('user_id', Auth::id());
 
-
-
         if ($request->has('types')) {
             $query->whereIn('type', $request->types);
-        }
-
-        if ($request->has('year')) {
-            $query->whereYear('time', $request->input('year'));
-            if ($request->has('month')) {
-                $query->whereMonth('time', $request->input('month'));
-                if ($request->has('day')) {
-                    $query->whereDay('time', $request->input('day'));
-                }
-            }
         }
 
         $currentYear = $request->input('year', '');
         $currentMonth = $request->input('month', '');
         $currentDay = $request->input('day', '');
 
+        if ($currentYear) {
+            $query->whereYear('time', $currentYear);
+            if ($currentMonth) {
+                $query->whereMonth('time', $currentMonth);
+                if ($currentDay) {
+                    $query->whereDay('time', $currentDay);
+                }
+            }
+        }
+
         $field = $request->input('field', 'time');
         $sort = $request->input('sort', 'desc');
         $query->orderBy($field, $sort);
 
-
-
         return view('user.access-history', [
-            'histories' => $query->paginate(6),
+            'histories' => $query->paginate(HISTORY_PAGINATE),
             'years' => $years,
             'currentYear' => $currentYear,
             'currentMonth' => $currentMonth,
