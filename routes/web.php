@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\UsersManagementController;
 use App\Http\Controllers\Auth\RegisterUserController;
 use App\Http\Controllers\Auth\SessionController;
 use App\Http\Controllers\DemoVerificationController;
+use App\Http\Controllers\User\AccessHistoryController;
 use App\Http\Controllers\User\ChangeEmailController;
 use App\Http\Controllers\User\UserInformationController;
 use App\Http\Controllers\User\VerificationController;
@@ -42,18 +43,21 @@ Route::middleware('auth')->prefix('/email')->name('verification')->group(functio
     Route::post('/verification-notification', [VerificationController::class,'resend'])->middleware(['throttle:6,1'])->name('.send');
 });
 
-
+// User
 Route::middleware(['auth','verified'])->prefix('/user')->name('user')->group(function () {
     Route::prefix('/info')->name('.info')->group(function () {
         Route::get('/', [UserInformationController::class, 'show']);
         Route::post('/', [UserInformationController::class, 'update'])->name('.update');
         Route::post('/password', [UserInformationController::class, 'updatePassword'])->name('.password');
 
-
         Route::get('/email', [ChangeEmailController::class, 'index'])->name('.changeEmail');
         Route::post('/email', [ChangeEmailController::class, 'sendChangeEmail'])->name('.sendChangeEmail');
         Route::get('/email/verify/{token}', [ChangeEmailController::class, 'verifyChangeEmail'])->name('.verifyChangeEmail');
+
+
     });
+
+    Route::get('/history', [AccessHistoryController::class, 'index'])->name('.history');
 });
 
 
@@ -88,5 +92,5 @@ Route::middleware(['auth', AdminMiddleware::class])->prefix('/admin')->name('adm
 
 });
 
-Route::get('/admin/api/import-status', [ImportStatusController::class, 'getImportStatus']);
+Route::get('/api/import-status', [ImportStatusController::class, 'getImportStatus']);
 

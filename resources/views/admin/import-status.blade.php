@@ -36,7 +36,7 @@
     @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                const apiUrl2 = "http://localhost:8000/admin/api/import-status";
+                const apiUrl2 = "http://localhost:8000/api/import-status";
                 let importStatus = [];
                 let pageSize = 6;
                 let currentPage = 1;
@@ -128,7 +128,7 @@
                         hour12: true
                     });
                 }
-                
+
                 fetchData();
 
                 setInterval(fetchData, 5000);

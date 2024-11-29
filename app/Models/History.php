@@ -13,7 +13,9 @@ class History extends Model
         'ip_address',
         'time',
         'user_id',
-        'type'
+        'type',
+        'device',
+        'platform',
     ];
 
     public function user(): BelongsTo
