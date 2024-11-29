@@ -25,7 +25,7 @@ class EditUserRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'phone_number' => ['regex:/^(((\+|)84)|0)(3|5|7|8|9)+([0-9]{8})\b/'],
+            'phone_number' => ['regex:/^(((\+|)84)|0)(3|5|7|8|9)+([0-9]{8})\b/','nullable'],
             'role' => ['required', 'string', 'in:admin,user'],
             'address' => 'string|max:255|nullable',
         ];

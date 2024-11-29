@@ -39,10 +39,16 @@
     @endif
     <div class="grid grid-cols-12 text-gray-900 min-h-fit pr-4">
         <div class="col-start-3 col-end-13">
-            <div class="p-4 flex justify-between items-center">
+            <div class="p-4 flex justify-between items-start">
                 <h1 class="text-3xl">Users</h1>
 
-                <div>
+
+                <div class="flex items-start gap-4">
+                    <form action="{{route('admin.users.export')}}" method="get">
+                        @csrf
+                        <button class="mt-4 py-2 bg-blue-500 rounded px-2 text-white">Export Users</button>
+                    </form>
+
                     <form action="{{route('admin.users.import')}}" method="POST" enctype="multipart/form-data" class="space-y-4 max-w-md mx-auto">
                         @method('PUT')
                         @csrf

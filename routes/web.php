@@ -80,13 +80,14 @@ Route::middleware(['auth', AdminMiddleware::class])->prefix('/admin')->name('adm
     Route::get('/users/create',[UsersManagementController::class,'showCreateForm'])->name('.users.showCreateForm');
     Route::post('/users/create',[UsersManagementController::class,'create'])->name('.users.create');
 
-    Route::get('/users/{user}',[UsersManagementController::class,'showEdit'])->name('.users.showEdit');
+    Route::get('/users/{user}',[UsersManagementController::class,'showEdit'])->name('.users.showEdit')->where(['user' => '[0-9]+']);
     Route::post('/users/{user}',[UsersManagementController::class,'update'])->name('.users.update');
 
     Route::put('/users/import',[UsersManagementController::class,'import'])->name('.users.import');
     Route::get('/import-status', [ImportStatusController::class, 'index'])->name('.importStatus');
+    Route::get('/users/export', [UsersManagementController::class, 'export'])->name('.users.export');
 
 });
 
-Route::get('/admin/api/import-status', [ImportStatusController::class, 'getImportStatus']);
+Route::get('/api/import-status', [ImportStatusController::class, 'getImportStatus'])->name('getImportStatus');
 
