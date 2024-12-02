@@ -37,6 +37,7 @@
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const apiUrl2 = "{{route('getImportStatus')}}";
+
                 let importStatus = [];
                 let pageSize = 6;
                 let currentPage = 1;
