@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('password');
             $table->string('phone_number', 20)->nullable();
             $table->string('address', 100)->nullable();
-            $table->string('role', 8)->nullable(false);
             $table->rememberToken();
             $table->timestamps();
         });

@@ -6,6 +6,7 @@ enum UserRole : string
 {
     const User = 'user';
     const Admin = 'admin';
+    const Manager = 'manager';
 
     public static function values(): array
     {

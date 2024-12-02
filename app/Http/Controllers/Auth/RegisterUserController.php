@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthRequest;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\DB;
@@ -25,11 +27,10 @@ class RegisterUserController extends Controller
                 'name' => $validated["name"],
                 'email' => $validated["email"],
                 'password' => Hash::make($validated["password"]),
-                'role' => 'user'
+                'role_id' => Role::where('name', UserRole::User)->first()->id,
             ]);
             DB::commit();
             event(new Registered($user));
-
             return redirect()->route('login')->with('success', 'Registration successful!');
 
         } catch (\Exception $e) {
