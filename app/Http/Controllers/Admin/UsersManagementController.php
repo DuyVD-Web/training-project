@@ -11,6 +11,7 @@ use App\Http\Requests\UsersImportRequest;
 use App\Jobs\ProcessImportUsers;
 use App\Models\ImportStatus;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
@@ -113,7 +114,7 @@ class UsersManagementController extends Controller
     public function export()
     {
         try {
-            return Excel::download(new UsersExport, 'users.xlsx')->setChunkSize(500);
+            return Excel::download(new UsersExport, 'user_list_'. Carbon::now()->format('Ymd') .'.xlsx')->setChunkSize(500);
         } catch (\Exception $e) {
             return back()->with('error', 'Export failed');
         }
