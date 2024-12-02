@@ -35,12 +35,7 @@ class SyncRoutes extends Command
         $skipped = 0;
 
         foreach ($routes as $route) {
-            // Skip routes without a name
             $routeName = $route->getName();
-            if (!$routeName) {
-                $skipped++;
-                continue;
-            }
 
             // Filter for admin and user routes
             if (!$this->isAdminOrUserRoute($routeName)) {

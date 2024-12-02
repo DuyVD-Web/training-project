@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Models\Permission;
 use App\Models\Role;
@@ -11,7 +12,7 @@ class RoleManagementController extends Controller
 {
     public function index()
     {
-        $roles = Role::where('name' , '!=', 'admin')->with('permissions')->get();
+        $roles = Role::where('name' , '!=', UserRole::Admin)->with('permissions')->get();
         $allPermissions = Permission::all();
 
         return view('admin.role-management', compact('roles', 'allPermissions'));
