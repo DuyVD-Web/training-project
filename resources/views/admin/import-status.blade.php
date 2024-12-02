@@ -36,7 +36,8 @@
     @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                const apiUrl2 = "http://localhost:8000/api/import-status";
+                const apiUrl2 = "{{route('getImportStatus')}}";
+
                 let importStatus = [];
                 let pageSize = 6;
                 let currentPage = 1;
@@ -47,6 +48,7 @@
                             headers: {
                                 'Content-Type': 'application/json',
                                 'Accept': 'application/json',
+                                'Access-Control-Allow-Origin': '*',
                             },
                         });
                         importStatus = await response.json()
