@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\RoleManagementController;
 use App\Http\Controllers\Admin\ImportStatusController;
 use App\Http\Controllers\Admin\UsersManagementController;
 use App\Http\Controllers\Auth\RegisterUserController;
@@ -91,6 +92,8 @@ Route::middleware(['auth', AdminMiddleware::class])->prefix('/admin')->name('adm
     Route::get('/import-status', [ImportStatusController::class, 'index'])->name('.importStatus');
     Route::get('/users/export', [UsersManagementController::class, 'export'])->name('.users.export');
 
+    Route::get('/role-management', [RoleManagementController::class, 'index'])->name('.role-management');
+    Route::patch('/role-management', [RoleManagementController::class, 'update'])->name('.role-management.update');
 });
 
 Route::get('/api/import-status', [ImportStatusController::class, 'getImportStatus'])->name('getImportStatus');
