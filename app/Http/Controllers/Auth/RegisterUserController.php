@@ -19,6 +19,7 @@ class RegisterUserController extends Controller
     }
     public function store(AuthRequest $request)
     {
+        define("App\Http\Controllers\Auth\USER_ID", 3);
         $validated = $request->validated();
 
         try {
@@ -27,7 +28,7 @@ class RegisterUserController extends Controller
                 'name' => $validated["name"],
                 'email' => $validated["email"],
                 'password' => Hash::make($validated["password"]),
-                'role_id' => Role::where('name', UserRole::User)->first()->id,
+                'role_id' => USER_ID,
             ]);
             DB::commit();
             event(new Registered($user));

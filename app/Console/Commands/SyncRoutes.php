@@ -27,39 +27,31 @@ class SyncRoutes extends Command
      */
     public function handle()
     {
-        // Get all registered routes
         $routes = Route::getRoutes();
-
-        // Track changes
-        $added = 0;
-        $skipped = 0;
+        $currentRouteNames = [];
 
         foreach ($routes as $route) {
             $routeName = $route->getName();
 
-            // Filter for admin and user routes
             if (!$this->isAdminOrUserRoute($routeName)) {
-                $skipped++;
                 continue;
             }
 
-            // Check if route exists in database
-            $existingRoute = Permission::where('name', $routeName)->first();
+            $currentRouteNames[] = $routeName;
 
-            if (!$existingRoute) {
-                // Create new route permission entry
-                Permission::create([
-                    'name' => $routeName,
-                ]);
-                $added++;
+            $existingRoute = Permission::firstOrCreate(
+                ['name' => $routeName]
+            );
+
+            if ($existingRoute->wasRecentlyCreated) {
                 $this->info("Added new route: {$routeName}");
             }
         }
 
-        // Output summary
-        $this->info("Route Sync Complete:");
-        $this->info("Added: {$added}");
-        $this->info("Skipped: {$skipped}");
+        // Remove routes no longer in application
+        $removedRoutes = Permission::whereNotIn('name', $currentRouteNames)->delete();
+
+        $this->info("Route Sync Complete.");
     }
 
     /**
