@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use const App\USER_ID;
 
 class RegisterUserController extends Controller
 {
@@ -19,7 +20,7 @@ class RegisterUserController extends Controller
     }
     public function store(AuthRequest $request)
     {
-        define("App\Http\Controllers\Auth\USER_ID", 3);
+        define("App\USER_ID", 3);
         $validated = $request->validated();
 
         try {

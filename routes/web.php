@@ -47,18 +47,18 @@ Route::middleware('auth')->prefix('/email')->name('verification')->group(functio
 // User
 Route::middleware(['auth','verified'])->prefix('/user')->name('user')->group(function () {
     Route::prefix('/info')->name('.info')->group(function () {
-        Route::get('/', [UserInformationController::class, 'show']);
-        Route::post('/', [UserInformationController::class, 'update'])->name('.update');
-        Route::post('/password', [UserInformationController::class, 'updatePassword'])->name('.password');
+        Route::get('/', [UserInformationController::class, 'show'])->middleware('check.permission:user.info');
+        Route::post('/', [UserInformationController::class, 'update'])->name('.update')->middleware('check.permission:user.info.update');
+        Route::post('/password', [UserInformationController::class, 'updatePassword'])->name('.password')->middleware('check.permission:user.info.password');
 
-        Route::get('/email', [ChangeEmailController::class, 'index'])->name('.changeEmail');
-        Route::post('/email', [ChangeEmailController::class, 'sendChangeEmail'])->name('.sendChangeEmail');
+        Route::get('/email', [ChangeEmailController::class, 'index'])->name('.changeEmail')->middleware('check.permission:user.info.changeEmail');
+        Route::post('/email', [ChangeEmailController::class, 'sendChangeEmail'])->name('.sendChangeEmail')->middleware('check.permission:user.info.sendChangeEmail');
         Route::get('/email/verify/{token}', [ChangeEmailController::class, 'verifyChangeEmail'])->name('.verifyChangeEmail');
 
 
     });
 
-    Route::get('/history', [AccessHistoryController::class, 'index'])->name('.history');
+    Route::get('/history', [AccessHistoryController::class, 'index'])->name('.history')->middleware('check.permission:user.history');
 });
 
 
@@ -78,22 +78,22 @@ Route::middleware('auth')->prefix('/demo')->name('demo')->group(function () {
 
 
 // Admin
-Route::middleware(['auth', AdminMiddleware::class])->prefix('/admin')->name('admin')->group(function () {
-    Route::get('/users',[UsersManagementController::class,'index'])->name('.users');
-    Route::delete('/users/{user}',[UsersManagementController::class,'delete'])->name('.users.delete');
+Route::middleware(['auth'])->prefix('/admin')->name('admin')->group(function () {
+    Route::get('/users',[UsersManagementController::class,'index'])->name('.users')->middleware('check.permission:admin.users');
+    Route::delete('/users/{user}',[UsersManagementController::class,'delete'])->name('.users.delete')->middleware('check.permission:admin.users.delete');
 
-    Route::get('/users/create',[UsersManagementController::class,'showCreateForm'])->name('.users.showCreateForm');
-    Route::post('/users/create',[UsersManagementController::class,'create'])->name('.users.create');
+    Route::get('/users/create',[UsersManagementController::class,'showCreateForm'])->name('.users.showCreateForm')->middleware('check.permission:admin.users.showCreateForm');
+    Route::post('/users/create',[UsersManagementController::class,'create'])->name('.users.create')->middleware('check.permission:admin.users.create');
 
-    Route::get('/users/{user}',[UsersManagementController::class,'showEdit'])->name('.users.showEdit')->where(['user' => '[0-9]+']);
-    Route::post('/users/{user}',[UsersManagementController::class,'update'])->name('.users.update');
+    Route::get('/users/{user}',[UsersManagementController::class,'showEdit'])->name('.users.showEdit')->where(['user' => '[0-9]+'])->middleware('check.permission:admin.users.showEdit');
+    Route::post('/users/{user}',[UsersManagementController::class,'update'])->name('.users.update')->where(['user' => '[0-9]+'])->middleware('check.permission:admin.users.update');
 
-    Route::put('/users/import',[UsersManagementController::class,'import'])->name('.users.import');
-    Route::get('/import-status', [ImportStatusController::class, 'index'])->name('.importStatus');
-    Route::get('/users/export', [UsersManagementController::class, 'export'])->name('.users.export');
+    Route::put('/users/import',[UsersManagementController::class,'import'])->name('.users.import')->middleware('check.permission:admin.users.import');
+    Route::get('/import-status', [ImportStatusController::class, 'index'])->name('.importStatus')->middleware('check.permission:admin.importStatus');
+    Route::get('/users/export', [UsersManagementController::class, 'export'])->name('.users.export')->middleware('check.permission:admin.users.export');
 
-    Route::get('/role-management', [RoleManagementController::class, 'index'])->name('.role-management');
-    Route::patch('/role-management', [RoleManagementController::class, 'update'])->name('.role-management.update');
+    Route::get('/role-management', [RoleManagementController::class, 'index'])->name('.role-management')->middleware('check.permission:admin.role-management');
+    Route::patch('/role-management', [RoleManagementController::class, 'update'])->name('.role-management.update')->middleware('check.permission:admin.role-management.update');
 });
 
 Route::get('/api/import-status', [ImportStatusController::class, 'getImportStatus'])->name('getImportStatus');

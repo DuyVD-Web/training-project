@@ -80,7 +80,12 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasManyThrough(Permission::class, Role::class);
     }
 
-    public function roles(): BelongsTo
+    public function hasPermission($permissionName): bool
+    {
+        return $this->role && $this->role->permissions->contains('name', $permissionName);
+    }
+
+    public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
     }
