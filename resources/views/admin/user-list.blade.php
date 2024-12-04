@@ -71,16 +71,13 @@
             </div>
 
             <div class="p-4 flex justify-between items-center">
-                <div class="flex items-center border-2 border-gray-500 bg-white w-fit ml-4 p-4 shadow-md">
-                    <input id="admin" name="roles[]" type="checkbox" value="admin"
-                           {{ in_array('admin', request('roles', [])) ? 'checked' : '' }}
-                           class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
-                    <label for="admin" class="ms-2 text-sm font-medium text-gray-900">Admin</label>
-
-                    <input id="user" name="roles[]" type="checkbox" value="user"
-                           {{ in_array('user', request('roles', [])) ? 'checked' : '' }}
-                           class="ml-3 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
-                    <label for="user" class="ms-2 text-sm font-medium text-gray-900">User</label>
+                <div class="flex items-center border-2 border-gray-500 bg-white w-fit ml-4 p-4 shadow-md justify-between">
+                    @foreach((new \ReflectionClass(\App\Enums\UserRole::class))->getConstants() as $key => $value)
+                        <input id="{{$value}}" name="roles[]" type="checkbox" value="{{$value}}"
+                               {{ in_array($value, request('roles', [])) ? 'checked' : '' }}
+                               class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                        <label for="{{$value}}" class="ms-2 text-sm font-medium text-gray-900">{{$key}}</label>
+                    @endforeach
 
                     <input id="verified" name="verified" type="checkbox" value="1"
                            {{ request('verified') ? 'checked' : '' }}
@@ -156,7 +153,7 @@
                                 {{$user->email}}
                             </td>
                             <td class="p-3 px-5">
-                                {{$user->role}}
+                                {{$user->role->name}}
                             </td>
                             <td class="p-3 px-5">
                                 {{$user->email_verified_at}}
@@ -168,7 +165,7 @@
                                 {{$user->address}}
                             </td>
                             <td class="p-3 px-5 flex justify-end gap-3">
-                                @if($user->role !== 'admin')
+                                @if($user->role->name !== \App\Enums\UserRole::Admin)
                                     <form action="{{route('admin.users.delete', $user)}}" method="post"
                                           onsubmit="return confirm('Are you sure you want to delete this user?');">
                                         @method('DELETE')

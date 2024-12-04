@@ -12,7 +12,7 @@ class AdminMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->check() && auth()->user()->role_id === Role::where('name', UserRole::Admin)->first()->id) {
+        if (auth()->check() && auth()->user()->role->name === UserRole::Admin) {
             return $next($request);
         }
         abort(Response::HTTP_FORBIDDEN);

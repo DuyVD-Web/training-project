@@ -28,7 +28,7 @@ class CreateUserRequest extends FormRequest
             'password' => 'required|min:6|confirmed',
             'phone_number' => ['regex:/^(((\+|)84)|0)(3|5|7|8|9)+([0-9]{8})\b/'],
             'address' => 'string',
-            'role' => 'string',
+            'role_id' => 'required|exists:roles,id|integer',
         ];
     }
 

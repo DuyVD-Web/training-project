@@ -41,7 +41,7 @@ class SessionController extends Controller
             ]);
             DB::commit();
             request()->session()->regenerate();
-            if (Auth::user()->role == UserRole::Admin) {
+            if (Auth::user()->role->name == UserRole::Admin || Auth::user()->role->name == UserRole::Manager) {
                 return redirect()->route('admin.users');
             }
             return redirect()->route('dashboard');
