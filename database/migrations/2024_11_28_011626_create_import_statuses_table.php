@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('import_statuses', function (Blueprint $table) {
             $table->id();
             $table->string('status',10);
-            $table->string('message',100)->nullable();
+            $table->text('message')->nullable();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });

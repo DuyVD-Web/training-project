@@ -115,7 +115,7 @@ class UsersManagementController extends Controller
             return redirect()->route('admin.users')
                 ->with('success', "Importing users. Please go to Import's status to check result.");
         } catch (\Exception) {
-            return redirect()->route('admin.users')
+            return redirect()->back()
                 ->with('error', 'Import failed.');
         }
     }

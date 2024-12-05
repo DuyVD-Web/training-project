@@ -47,13 +47,32 @@ class ProcessImportUsers implements ShouldQueue
             ]);
             Storage::delete($this->filePath);
         } catch (\Exception $e) {
+            $errors = [];
+
+            // If it's a validation exception, collect specific validation errors
+            if ($e instanceof \Maatwebsite\Excel\Validators\ValidationException) {
+                foreach ($e->failures() as $failure) {
+                    $errors[] = sprintf(
+                        "Row %d, Column %s: %s",
+                        $failure->row(),
+                        $failure->attribute(),
+                        $failure->errors()[0]
+                    );
+                }
+            }
+
+            if (empty($errors)) {
+                $errors[] = $e->getMessage();
+            }
+
+            // Log all errors
             Log::error('User import failed', [
                 'file' => $this->filePath,
-                'error' => $e->getMessage(),
+                'errors' => $errors,
             ]);
 
-            $errorMessage = strtok($e->getMessage(), "\n");
-            $errorMessage = substr($errorMessage, 0, 99);
+            // Format errors into a single string, limiting total length
+            $errorMessage = nl2br(implode(PHP_EOL, $errors));
 
             ImportStatus::find($this->importId)->update([
                 'status' => Status::Failed,
