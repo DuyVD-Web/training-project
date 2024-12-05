@@ -62,7 +62,7 @@ class ChangeEmailController extends Controller
             return redirect()->route('user.info')->with('success', 'New email updated successfully!');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('change-email')->with('error', 'Something went wrong!');
+            return redirect()->route('user.info.changeEmail')->with('error', 'Something went wrong!');
         }
     }
 }

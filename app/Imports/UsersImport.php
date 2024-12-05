@@ -22,7 +22,7 @@ class UsersImport implements ToModel, WithHeadingRow, WithValidation, WithChunkR
             'name' => $row["name"],
             'email' => $row["email"],
             'password' => Hash::make($row['password']),
-            'role' => $row['role'],
+            'role_id' => $row['role_id'],
             'phone_number' => $row['phone_number'],
             'address' => $row['address'],
         ]);
@@ -36,7 +36,7 @@ class UsersImport implements ToModel, WithHeadingRow, WithValidation, WithChunkR
             'password' => 'required',
             'phone_number' => ['regex:/^(((\+|)84)|0)(3|5|7|8|9)+([0-9]{8})\b/','nullable'],
             'address' => 'string|nullable',
-            'role' => 'string|required|in:admin,user',
+            'role_id' => 'required|exists:roles,id',
         ];
     }
 

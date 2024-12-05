@@ -10,6 +10,7 @@ use App\Http\Requests\EditUserRequest;
 use App\Http\Requests\UsersImportRequest;
 use App\Jobs\ProcessImportUsers;
 use App\Models\ImportStatus;
+use App\Models\Role;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -32,7 +33,8 @@ class UsersManagementController extends Controller
         }
 
         if ($request->has('roles')) {
-            $query->whereIn('role', $request->roles);
+            $roles = Role::whereIn('name', $request->roles)->get();
+            $query->whereIn('role_id', $roles->pluck('id'));
         }
 
         if ($request->has('verified')) {
@@ -42,7 +44,14 @@ class UsersManagementController extends Controller
         $field = $request->input('field', 'name');
         $sort = $request->input('sort', 'asc');
         $search = $request->input('search_query', '');
-        $query->orderBy($field, $sort);
+
+        if ($field === 'role') {
+            $query->join('roles', 'users.role_id', '=', 'roles.id')
+                ->orderBy('roles.name', $sort)
+                ->select('users.*');
+        } else {
+            $query->orderBy($field, $sort);
+        }
 
         $users = $query->paginate(6);
         return view('admin.user-list', [

@@ -6,7 +6,9 @@ namespace App\Models;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -27,7 +29,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'phone_number',
         'address',
-        'role'
+        'role_id'
     ];
 
     /**
@@ -71,5 +73,20 @@ class User extends Authenticatable implements MustVerifyEmail
     public function importRequests(): HasMany
     {
         return $this->hasMany(ImportStatus::class);
+    }
+
+    public function permissions(): HasManyThrough
+    {
+        return $this->hasManyThrough(Permission::class, Role::class);
+    }
+
+    public function hasPermission($permissionName): bool
+    {
+        return $this->role && $this->role->permissions->contains('name', $permissionName);
+    }
+
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class);
     }
 }
