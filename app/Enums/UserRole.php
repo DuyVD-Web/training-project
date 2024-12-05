@@ -4,9 +4,9 @@ namespace App\Enums;
 
 enum UserRole : string
 {
-    const Admin = 'admin';
-    const Manager = 'manager';
     const User = 'user';
+    const Manager = 'manager';
+    const Admin = 'admin';
 
     public static function values(): array
     {

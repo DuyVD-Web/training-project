@@ -6,13 +6,14 @@ use App\Enums\UserRole;
 use App\Models\Role;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class AdminMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->check() && auth()->user()->role->name === UserRole::Admin) {
+        if (Auth::check() && Auth::user()->role->name === UserRole::Admin) {
             return $next($request);
         }
         abort(Response::HTTP_FORBIDDEN);

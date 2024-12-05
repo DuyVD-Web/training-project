@@ -68,24 +68,34 @@
                         </h2>
                     </div>
                     <div class="p-6">
-                        <form action="{{route('admin.role-management.update')}}" method="POST">
+                        <form action="{{ route('admin.role-management.update') }}" method="POST">
                             @method('PATCH')
                             @csrf
                             <input type="hidden" name="role_id" value="{{ $role->id }}">
 
                             <div class="flex flex-col gap-2">
-                                @foreach($allPermissions as $permission)
+                                @php
+                                    $roleType = $role->name === \App\Enums\UserRole::User
+                                        ? \App\Enums\UserRole::User
+                                        : \App\Enums\UserRole::Admin;
+
+                                    $filteredPermissions = $allPermissions->filter(function ($permission) use ($roleType) {
+                                        return explode('.', $permission->name)[0] === $roleType;
+                                    });
+                                @endphp
+
+                                @foreach($filteredPermissions as $permission)
                                     <div class="flex items-center">
                                         <input
                                             type="checkbox"
                                             name="permissions[]"
                                             value="{{ $permission->id }}"
                                             class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                                            id="permission_{{$role->id}}_{{ $permission->id }}"
-                                            {{ $role->permissions->contains($permission) ? 'checked' : '' }}
+                                            id="permission_{{ $role->id }}_{{ $permission->id }}"
+                                            @checked($role->permissions->contains($permission))
                                         >
                                         <label
-                                            for="permission_{{$role->id}}_{{ $permission->id }}"
+                                            for="permission_{{ $role->id }}_{{ $permission->id }}"
                                             class="ml-2 block text-sm text-gray-900"
                                         >
                                             {{ ucfirst(str_replace('_', ' ', $permission->name)) }}
@@ -135,6 +145,18 @@
                         }, 500);
                     }, 3000);
                 }
+
+                document.querySelectorAll('form').forEach(form => {
+                    form.addEventListener('submit', (event) => {
+                        event.preventDefault()
+                        const buttons = document.querySelectorAll('form button');
+                        buttons.forEach(button => {
+                            button.disabled = true;
+                        });
+
+                        event.target.submit();
+                    });
+                });
             })
         </script>
     @endpush

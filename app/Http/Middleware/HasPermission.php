@@ -15,17 +15,13 @@ class HasPermission
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next, $permission): Response
+    public function handle(Request $request, Closure $next): Response
     {
         if (Auth::user()->role->name === UserRole::Admin) {
             return $next($request);
         }
 
-        if (!Auth::check()) {
-            return redirect('login');
-        }
-
-        if (!$request->user()->hasPermission($permission)) {
+        if (!$request->user()->hasPermission($request->route()->getName())) {
             abort(403, 'Unauthorized action.');
         }
 

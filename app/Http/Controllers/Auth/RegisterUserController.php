@@ -8,6 +8,7 @@ use App\Http\Requests\AuthRequest;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use const App\USER_ID;
@@ -20,7 +21,6 @@ class RegisterUserController extends Controller
     }
     public function store(AuthRequest $request)
     {
-        define("App\USER_ID", 3);
         $validated = $request->validated();
 
         try {
@@ -29,7 +29,7 @@ class RegisterUserController extends Controller
                 'name' => $validated["name"],
                 'email' => $validated["email"],
                 'password' => Hash::make($validated["password"]),
-                'role_id' => USER_ID,
+                'role_id' => Config::get("constant.user"),
             ]);
             DB::commit();
             event(new Registered($user));

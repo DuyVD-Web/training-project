@@ -6,7 +6,7 @@ use App\Models\Permission;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Route;
 
-class SyncRoutes extends Command
+class SyncRoutesCommand extends Command
 {
     /**
      * The name and signature of the console command.
