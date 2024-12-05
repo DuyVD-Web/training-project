@@ -13,7 +13,7 @@ class UsersImportRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return Auth::user()->role == UserRole::Admin;
+        return true;
     }
 
     /**
