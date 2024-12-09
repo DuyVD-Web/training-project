@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Enums\ImportStatus as Status;
 use App\Imports\UsersImport;
 use App\Models\ImportStatus;
+use Exception;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -37,47 +38,88 @@ class ProcessImportUsers implements ShouldQueue
      */
     public function handle(): void
     {
+        $import = new UsersImport();
+
         try {
-            $import = new UsersImport();
+            DB::beginTransaction();
             Excel::import($import, $this->filePath);
 
-            ImportStatus::find($this->importId)->update([
-                'status' => Status::Done,
-                'message' => 'Imported successfully'
-            ]);
-            Storage::delete($this->filePath);
-        } catch (\Exception $e) {
-            $errors = [];
-
-            // If it's a validation exception, collect specific validation errors
-            if ($e instanceof \Maatwebsite\Excel\Validators\ValidationException) {
-                foreach ($e->failures() as $failure) {
-                    $errors[] = sprintf(
-                        "Row %d, Column %s: %s",
-                        $failure->row(),
-                        $failure->attribute(),
-                        $failure->errors()[0]
-                    );
-                }
-            }
+            // Get any errors that occurred during import
+            $errors = $import->getErrors();
 
             if (empty($errors)) {
-                $errors[] = $e->getMessage();
+                DB::commit();
+                // No errors, update status to done
+                ImportStatus::find($this->importId)->update([
+                    'status' => Status::Done,
+                    'message' => 'Imported successfully'
+                ]);
+
+            } else {
+                DB::rollBack();
+                // Some rows failed, but import continued
+                $formattedErrors = $this->formatErrors($errors);
+
+                ImportStatus::find($this->importId)->update([
+                    'status' => Status::Failed,
+                    'message' => $formattedErrors
+                ]);
+
+                Log::warning('User import failed', [
+                    'file' => $this->filePath,
+                    'errors' => $errors,
+                ]);
             }
 
-            // Log all errors
-            Log::error('User import failed', [
-                'file' => $this->filePath,
-                'errors' => $errors,
-            ]);
+            Storage::delete($this->filePath);
 
-            // Format errors into a single string, limiting total length
-            $errorMessage = nl2br(implode(PHP_EOL, $errors));
+        } catch (\Exception $e) {
+            // Catastrophic failure that prevented the entire import
+            $errorMessage = $this->formatCatastrophicError($e);
 
             ImportStatus::find($this->importId)->update([
                 'status' => Status::Failed,
                 'message' => $errorMessage,
             ]);
+
+            Log::error('User import completely failed', [
+                'file' => $this->filePath,
+                'error' => $errorMessage,
+            ]);
+
         }
+    }
+
+    private function formatErrors(array $errors): string
+    {
+        $formattedErrors = array_map(function ($error) {
+            if (is_array($error)) {
+                return sprintf(
+                    "Row data: %s, Error: %s",
+                    json_encode($error['row']),
+                    implode("",$error['errors'])
+                );
+            }
+            return (string) $error;
+        }, $errors);
+
+        return nl2br(implode(PHP_EOL, $formattedErrors)) ;
+    }
+
+    /**
+     * Format catastrophic import errors
+     *
+     * @param Exception $e
+     * @return string
+     */
+    private function formatCatastrophicError(Exception $e): string
+    {
+        // Customize error message for system-level failures
+        return sprintf(
+            "Import failed: %s\nFile: %s\nLine: %d",
+            $e->getMessage(),
+            $e->getFile(),
+            $e->getLine()
+        );
     }
 }
