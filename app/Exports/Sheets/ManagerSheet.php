@@ -8,17 +8,17 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithTitle;
 
-class UsersSheet implements FromCollection, WithTitle, WithHeadings
+class ManagerSheet implements FromCollection, WithTitle, WithHeadings
 {
     public function collection()
     {
-        return User::where('role_id', Config::get('constant.user'))
+        return User::where('role_id', Config::get('constant.manager'))
             ->select('name', 'email', 'phone_number','address')->get();
     }
 
     public function title(): string
     {
-        return 'Users';
+        return 'Managers';
     }
 
     public function headings(): array
