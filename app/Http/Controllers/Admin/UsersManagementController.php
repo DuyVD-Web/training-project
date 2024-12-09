@@ -8,6 +8,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\EditUserRequest;
 use App\Http\Requests\UsersImportRequest;
+use App\Imports\CustomUsersImport;
+use App\Jobs\CustomImportProcess;
 use App\Jobs\ProcessImportUsers;
 use App\Models\ImportStatus;
 use App\Models\Role;
@@ -110,7 +112,9 @@ class UsersManagementController extends Controller
                 'status' => Status::Pending,
                 'user_id' => Auth::id(),
             ]);
-            ProcessImportUsers::dispatch($path, $import->id);
+
+            CustomImportProcess::dispatch($path,$import->id);
+//            ProcessImportUsers::dispatch($path, $import->id);
 
             return redirect()->route('admin.users')
                 ->with('success', "Importing users. Please go to Import's status to check result.");
