@@ -27,4 +27,11 @@ class UsersImportRequest extends FormRequest
             'file' => 'required|max:2048|mimes:xlsx,xls,csv',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'file' => 'File too large or not the right type.',
+        ];
+    }
 }

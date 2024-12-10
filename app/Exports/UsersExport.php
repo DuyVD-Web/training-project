@@ -13,6 +13,7 @@ class UsersExport implements WithMultipleSheets
         return [
             new Sheets\UsersSheet(),
             new Sheets\AdminsSheet(),
+            new Sheets\ManagerSheet(),
         ];
     }
 }

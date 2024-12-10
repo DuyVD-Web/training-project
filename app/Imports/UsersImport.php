@@ -4,13 +4,19 @@ namespace App\Imports;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Concerns\SkipsFailures;
+use Maatwebsite\Excel\Concerns\SkipsOnFailure;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
+use Maatwebsite\Excel\Validators\Failure;
 
-class UsersImport implements ToModel, WithHeadingRow, WithValidation, WithChunkReading
+class UsersImport implements ToModel, WithHeadingRow, WithValidation, WithChunkReading, SkipsOnFailure
 {
+    use SkipsFailures;
+    private array $errors = [];
+
     /**
      * @param array $row
      *
@@ -43,5 +49,21 @@ class UsersImport implements ToModel, WithHeadingRow, WithValidation, WithChunkR
     public function chunkSize(): int
     {
         return 500;
+    }
+
+    public function onFailure(Failure ...$failures): void
+    {
+        foreach ($failures as $failure) {
+            $this->errors[] = [
+                'row' => $failure->row(),
+                'attribute' => $failure->attribute(),
+                'errors' => $failure->errors()
+            ];
+        }
+    }
+
+    public function getErrors(): array
+    {
+        return $this->errors;
     }
 }
