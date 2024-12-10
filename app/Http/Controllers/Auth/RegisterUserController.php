@@ -29,7 +29,7 @@ class RegisterUserController extends Controller
                 'name' => $validated["name"],
                 'email' => $validated["email"],
                 'password' => Hash::make($validated["password"]),
-                'role_id' => Config::get("constant.user"),
+                'role_id' => Config::get("constant.user_id"),
             ]);
             DB::commit();
             event(new Registered($user));

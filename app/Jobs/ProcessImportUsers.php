@@ -48,12 +48,12 @@ class ProcessImportUsers implements ShouldQueue
             $errors = $import->getErrors();
 
             if (empty($errors)) {
-                DB::commit();
                 // No errors, update status to done
                 ImportStatus::find($this->importId)->update([
                     'status' => Status::Done,
                     'message' => 'Imported successfully'
                 ]);
+                DB::commit();
 
             } else {
                 DB::rollBack();

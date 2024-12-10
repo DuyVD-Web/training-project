@@ -2,18 +2,15 @@
 
 namespace App\Imports;
 
-use App\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use Maatwebsite\Excel\Concerns\SkipsFailures;
 use Maatwebsite\Excel\Concerns\ToCollection;
 
 class CustomUsersImport implements toCollection
 {
-    use SkipsFailures;
 
     private array $errors = [];
 
@@ -25,8 +22,8 @@ class CustomUsersImport implements toCollection
         $validator = Validator::make($rows->toArray(), $this->rules());
 
         if ($validator->fails()) {
-            // Log validation errors
 
+            // Log validation errors
             $this->errors = collect($validator->errors()->getMessages())
                 ->flatMap(function ($messages, $attribute) {
                     // Extract row and field indices using regex
@@ -121,7 +118,4 @@ class CustomUsersImport implements toCollection
     {
         return $this->errors;
     }
-
-
-
 }

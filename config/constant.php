@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'admin' => 1,
-    'manager' => 2,
-    'user' => 3,
+    'admin_id' => 1,
+    'manager_id' => 2,
+    'user_id' => 3,
 ];

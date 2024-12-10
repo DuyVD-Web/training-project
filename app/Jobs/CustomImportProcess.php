@@ -7,14 +7,16 @@ use App\Imports\CustomUsersImport;
 use App\Imports\UsersImport;
 use App\Models\ImportStatus;
 use Exception;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
-class CustomImportProcess
+class CustomImportProcess implements ShouldQueue
 {
     use Queueable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -40,6 +42,7 @@ class CustomImportProcess
         $import = new CustomUsersImport();
 
         try {
+            DB::beginTransaction();
             Excel::import($import, $this->filePath);
 
             $errors = $import->getErrors();
@@ -49,7 +52,9 @@ class CustomImportProcess
                     'status' => Status::Done,
                     'message' => 'Imported successfully'
                 ]);
+                DB::commit();
             } else {
+                DB::rollBack();
                 ImportStatus::find($this->importId)->update([
                     'status' => Status::Failed,
                     'message' => nl2br(implode(PHP_EOL, $errors))

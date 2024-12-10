@@ -12,7 +12,7 @@ class UsersSheet implements FromCollection, WithTitle, WithHeadings
 {
     public function collection()
     {
-        return User::where('role_id', Config::get('constant.user'))
+        return User::where('role_id', Config::get('constant.user_id'))
             ->select('name', 'email', 'phone_number','address')->get();
     }
 

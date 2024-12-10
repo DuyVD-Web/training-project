@@ -12,7 +12,7 @@ class ManagerSheet implements FromCollection, WithTitle, WithHeadings
 {
     public function collection()
     {
-        return User::where('role_id', Config::get('constant.manager'))
+        return User::where('role_id', Config::get('constant.manager_id'))
             ->select('name', 'email', 'phone_number','address')->get();
     }
 

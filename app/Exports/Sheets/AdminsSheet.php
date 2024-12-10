@@ -13,7 +13,7 @@ class AdminsSheet implements FromCollection, WithTitle, WithHeadings
 {
     public function collection()
     {
-        return User::where('role_id', Config::get('constant.admin'))
+        return User::where('role_id', Config::get('constant.admin_id'))
             ->select('name', 'email', 'phone_number','address')->get();
     }
 
