@@ -11,7 +11,6 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use const App\USER_ID;
 
 class RegisterUserController extends Controller
 {
