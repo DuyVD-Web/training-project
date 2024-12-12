@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\checkPermission;
 use App\Http\Middleware\HasPermission;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -16,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
         //
         $middleware->alias([
             'check.permission' => HasPermission::class,
+            'api.check.permission' => CheckPermission::class,
         ]);
 
     })

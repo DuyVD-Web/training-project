@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class HasPermission
+class CheckPermission
 {
     public function handle(Request $request, Closure $next): Response
     {
@@ -17,7 +17,9 @@ class HasPermission
         }
 
         if (!$request->user()->hasPermission($request->route()->getName())) {
-            abort(403, 'Unauthorized action.');
+            return response()->json([
+                'message' => 'Unauthorized',
+            ], 401);
         }
 
         return $next($request);
