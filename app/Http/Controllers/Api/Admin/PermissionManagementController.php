@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PermissionResource;
+use App\Http\Resources\RoleResource;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Traits\HttpResponses;
@@ -20,8 +22,8 @@ class PermissionManagementController extends Controller
         $allPermissions = Permission::all();
 
         return $this->responseSuccess([
-            'roles' => $roles,
-            'permissions' => $allPermissions
+            'roles' => RoleResource::collection($roles),
+            'permissions' => PermissionResource::collection($allPermissions),
         ]);
     }
 

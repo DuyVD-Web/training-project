@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\EditUserRequest;
 use App\Http\Requests\UsersImportRequest;
+use App\Http\Resources\UserResource;
 use App\Jobs\CustomImportProcess;
 use App\Models\ImportStatus;
 use App\Models\Role;
@@ -45,7 +46,6 @@ class UsersManagementController extends Controller
 
         $field = $request->input('field', 'name');
         $sort = $request->input('sort', 'asc');
-        $search = $request->input('search_query', '');
 
         if ($field === 'role') {
             $query->join('roles', 'users.role_id', '=', 'roles.id')
@@ -56,7 +56,23 @@ class UsersManagementController extends Controller
         }
 
         $users = $query->paginate(6);
-        return $this->responseSuccess(['users' => $users]);
+        return $this->responseSuccess([
+            'users' => UserResource::collection($users),
+            'meta' => [
+                'current_page' => $users->currentPage(),
+                'last_page' => $users->lastPage(),
+                'per_page' => $users->perPage(),
+                'total' => $users->total(),
+                'from' => $users->firstItem(),
+                'to' => $users->lastItem(),
+                'links' => [
+                    'first' => $users->url(1),
+                    'last' => $users->url($users->lastPage()),
+                    'prev' => $users->previousPageUrl(),
+                    'next' => $users->nextPageUrl(),
+                ]
+            ]
+        ]);
     }
 
     public function delete($userId)
@@ -70,13 +86,23 @@ class UsersManagementController extends Controller
         }
     }
 
-    public function edit($userId, EditUserRequest $request)
+    public function get($userId)
+    {
+        try {
+            $user = User::findOrFail($userId);
+            return $this->responseSuccess(['user' => new UserResource($user)]);
+        } catch (Exception $e) {
+            return $this->responseError("There was an error occurred in the process");
+        }
+    }
+
+    public function update($userId, EditUserRequest $request)
     {
         $validated = $request->validated();
         try {
             $user = User::where('id', $userId)->update($validated);
             return $this->responseSuccess([
-                'user' => $user
+                'user' => new UserResource(User::where('id', $userId)->first()),
             ]);
         } catch (Exception $e) {
             return $this->responseError("There was an error occurred in the process");

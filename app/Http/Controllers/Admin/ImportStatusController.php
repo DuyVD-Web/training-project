@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ImportStatusResource;
 use App\Models\ImportStatus;
 use App\Traits\HttpResponses;
 
@@ -19,7 +20,9 @@ class ImportStatusController extends Controller
     public function getImportStatusWithPagination()
     {
         $importStatus = ImportStatus::orderBy('updated_at', 'desc')->get();
-        return $this->responseSuccess(['importStatus' => $importStatus]);
+        return $this->responseSuccess([
+            'importStatus' => ImportStatusResource::collection($importStatus),
+        ]);
     }
 
     public function index()

@@ -34,6 +34,8 @@ Route::prefix('/admin')->middleware(['auth:sanctum', 'api.check.permission'])->n
 
     Route::delete('/user/{user}', [UsersManagementController::class, 'delete'])->name('.user.delete')->where(['user' => '[0-9]+']);
     Route::post('/user/create', [UsersManagementController::class, 'create'])->name('.user.create');
+    Route::get('/user/{user}', [UsersManagementController::class, 'get'])->name('.user.get')->where(['user' => '[0-9]+']);
+    Route::put('/user/{user}', [UsersManagementController::class, 'update'])->name('.user.update');
 
     Route::get('/permissions', [PermissionManagementController::class, 'index'])->name('.permissions');
     Route::patch('/permissions', [PermissionManagementController::class, 'update'])->name('.permissions.update');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\AccessHistoryResource;
 use App\Models\History;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
@@ -44,8 +45,24 @@ class AccessHistoryController extends Controller
         $sort = $request->input('sort', 'desc');
         $query->orderBy($field, $sort);
 
+        $histories = $query->paginate(HISTORY_PAGINATE);
+
         return $this->responseSuccess([
-            'histories' => $query->paginate(HISTORY_PAGINATE),
+            'histories' => AccessHistoryResource::collection($histories),
+            'meta' => [
+                'current_page' => $histories->currentPage(),
+                'last_page' => $histories->lastPage(),
+                'per_page' => $histories->perPage(),
+                'total' => $histories->total(),
+                'from' => $histories->firstItem(),
+                'to' => $histories->lastItem(),
+                'links' => [
+                    'first' => $histories->url(1),
+                    'last' => $histories->url($histories->lastPage()),
+                    'prev' => $histories->previousPageUrl(),
+                    'next' => $histories->nextPageUrl(),
+                ]
+            ],
             'years' => $years,
             'currentYear' => $currentYear,
             'currentMonth' => $currentMonth,
