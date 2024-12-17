@@ -2,16 +2,13 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthRequest;
-use App\Models\Role;
+use App\Jobs\SendVerifyEmail;
 use App\Models\User;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use const App\USER_ID;
 
 class RegisterUserController extends Controller
 {
@@ -19,6 +16,7 @@ class RegisterUserController extends Controller
     {
         return view('auth.register');
     }
+
     public function store(AuthRequest $request)
     {
         $validated = $request->validated();
@@ -32,7 +30,8 @@ class RegisterUserController extends Controller
                 'role_id' => Config::get("constant.user_id"),
             ]);
             DB::commit();
-            event(new Registered($user));
+            SendVerifyEmail::dispatch($user);
+//            event(new Registered($user));
             return redirect()->route('login')->with('success', 'Registration successful!');
 
         } catch (\Exception $e) {

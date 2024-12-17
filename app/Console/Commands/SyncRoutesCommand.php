@@ -25,7 +25,7 @@ class SyncRoutesCommand extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
         $routes = Route::getRoutes();
         $currentRouteNames = [];
@@ -33,7 +33,7 @@ class SyncRoutesCommand extends Command
         foreach ($routes as $route) {
             $routeName = $route->getName();
 
-            if (!$this->isAdminOrUserRoute($routeName)) {
+            if (!$this->isValidRoute($routeName)) {
                 continue;
             }
 
@@ -48,24 +48,25 @@ class SyncRoutesCommand extends Command
             }
         }
 
-        // Remove routes no longer in application
         $removedRoutes = Permission::whereNotIn('name', $currentRouteNames)->delete();
 
         $this->info("Route Sync Complete.");
     }
 
     /**
-     * Determine if the route is an admin or user route
+     * Determine if the route is an admin or user or api route
      *
      * @param string $routeName
      * @return bool
      */
-    protected function isAdminOrUserRoute($routeName)
+    protected function isValidRoute($routeName)
     {
         // Patterns to match admin and user routes
         $allowedPatterns = [
-            '/^admin\./',    // Routes starting with 'admin.'
-            '/^user\./',     // Routes starting with 'user.'
+            '/^admin\./',           // Routes starting with 'admin.'
+            '/^user\./',            // Routes starting with 'user.'
+            '/^api.admin\./', // Matches 'api.admin.something'
+            '/^api.user\./', // Matches 'api.user.something'
         ];
 
         foreach ($allowedPatterns as $pattern) {
