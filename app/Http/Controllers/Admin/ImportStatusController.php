@@ -19,8 +19,8 @@ class ImportStatusController extends Controller
 
     public function getImportStatusWithPagination()
     {
-        $importStatus = ImportStatus::orderBy('updated_at', 'desc')->get();
-        return $this->responseSuccess([
+        $importStatus = ImportStatus::orderBy('updated_at', 'desc')->paginate(8);
+        return $this->sendPaginateResponse( $importStatus,[
             'importStatus' => ImportStatusResource::collection($importStatus),
         ]);
     }

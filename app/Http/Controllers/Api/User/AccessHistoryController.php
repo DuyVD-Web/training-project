@@ -47,22 +47,8 @@ class AccessHistoryController extends Controller
 
         $histories = $query->paginate(HISTORY_PAGINATE);
 
-        return $this->responseSuccess([
+        return $this->sendPaginateResponse($histories, [
             'histories' => AccessHistoryResource::collection($histories),
-            'meta' => [
-                'current_page' => $histories->currentPage(),
-                'last_page' => $histories->lastPage(),
-                'per_page' => $histories->perPage(),
-                'total' => $histories->total(),
-                'from' => $histories->firstItem(),
-                'to' => $histories->lastItem(),
-                'links' => [
-                    'first' => $histories->url(1),
-                    'last' => $histories->url($histories->lastPage()),
-                    'prev' => $histories->previousPageUrl(),
-                    'next' => $histories->nextPageUrl(),
-                ]
-            ],
             'years' => $years,
             'currentYear' => $currentYear,
             'currentMonth' => $currentMonth,

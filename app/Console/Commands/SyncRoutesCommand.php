@@ -33,7 +33,7 @@ class SyncRoutesCommand extends Command
         foreach ($routes as $route) {
             $routeName = $route->getName();
 
-            if (!$this->isAdminOrUserOrApiRoute($routeName)) {
+            if (!$this->isValidRoute($routeName)) {
                 continue;
             }
 
@@ -54,12 +54,12 @@ class SyncRoutesCommand extends Command
     }
 
     /**
-     * Determine if the route is an admin or user route
+     * Determine if the route is an admin or user or api route
      *
      * @param string $routeName
      * @return bool
      */
-    protected function isAdminOrUserOrApiRoute($routeName)
+    protected function isValidRoute($routeName)
     {
         // Patterns to match admin and user routes
         $allowedPatterns = [

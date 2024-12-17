@@ -56,22 +56,8 @@ class UsersManagementController extends Controller
         }
 
         $users = $query->paginate(6);
-        return $this->responseSuccess([
+        return $this->sendPaginateResponse($users,[
             'users' => UserResource::collection($users),
-            'meta' => [
-                'current_page' => $users->currentPage(),
-                'last_page' => $users->lastPage(),
-                'per_page' => $users->perPage(),
-                'total' => $users->total(),
-                'from' => $users->firstItem(),
-                'to' => $users->lastItem(),
-                'links' => [
-                    'first' => $users->url(1),
-                    'last' => $users->url($users->lastPage()),
-                    'prev' => $users->previousPageUrl(),
-                    'next' => $users->nextPageUrl(),
-                ]
-            ]
         ]);
     }
 

@@ -23,4 +23,26 @@ trait HttpResponses
             "code" => $code
         ], $code);
     }
+
+    public function sendPaginateResponse ($model, $data = [], $code = 200): JsonResponse
+    {
+        $data ['meta'] =  [
+            'current_page' => $model->currentPage(),
+            'last_page' => $model->lastPage(),
+            'per_page' => $model->perPage(),
+            'total' => $model->total(),
+            'from' => $model->firstItem(),
+            'to' => $model->lastItem(),
+            'links' => [
+                'first' => $model->url(1),
+                'last' => $model->url($model->lastPage()),
+                'prev' => $model->previousPageUrl(),
+                'next' => $model->nextPageUrl(),
+            ]
+        ];
+        return response()->json([
+            "status" => true,
+            "data" => $data
+        ], $code);
+    }
 }
