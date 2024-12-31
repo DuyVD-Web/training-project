@@ -27,9 +27,9 @@ trait HttpResponses
     public function sendPaginateResponse ($model, $data = [], $code = 200): JsonResponse
     {
         $data ['meta'] =  [
-            'currentPage' => $model->currentPage(),
-            'lastPage' => $model->lastPage(),
-            'perPage' => $model->perPage(),
+            'current_page' => $model->currentPage(),
+            'last_page' => $model->lastPage(),
+            'per_page' => $model->perPage(),
             'total' => $model->total(),
             'from' => $model->firstItem(),
             'to' => $model->lastItem(),

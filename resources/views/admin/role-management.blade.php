@@ -80,7 +80,7 @@
                                         : \App\Enums\UserRole::Admin;
 
                                     $filteredPermissions = $allPermissions->filter(function ($permission) use ($roleType) {
-                                        return explode('.', $permission->name)[1] === $roleType;
+                                        return explode('.', $permission->name)[0] === $roleType;
                                     });
                                 @endphp
 

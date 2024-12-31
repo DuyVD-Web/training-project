@@ -22,7 +22,7 @@ class ChangeEmailRequest extends FormRequest
     {
         return [
             'email' => ['email:rfc,dns','required','unique:users,email','different:'. Auth::user()->email],
-            'password' => ['required', 'string', 'current_password'],
+            'password' => ['required', 'string'],
         ];
     }
 }

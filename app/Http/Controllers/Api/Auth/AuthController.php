@@ -27,7 +27,7 @@ class AuthController extends Controller
         if (!Auth::attempt($attributes)) {
             return $this->responseError([
                 'message' => 'Invalid credentials',
-            ], code: 403);
+            ], 403);
         }
 
         try {

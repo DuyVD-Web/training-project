@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\User;
 
-use App\Http\Requests\ChangeAvatar;
 use App\Http\Requests\ChangeEmailRequest;
 use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\EditInfoRequest;
@@ -15,7 +14,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class InformationController
@@ -42,7 +40,7 @@ class InformationController
             ]);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
-            return $this->responseError('There was error while updating information');
+            return $this->responseError('There was error while updating information', 500);
         }
     }
 
@@ -59,30 +57,7 @@ class InformationController
 
         } catch (\Exception $e) {
             Log::error($e->getMessage());
-            return $this->responseError('There was error while changing your password');
-        }
-    }
-
-    public function updateAvatar (ChangeAvatar $request)
-    {
-        $request->validated();
-        $user = $request->user();
-        $old_avatar = $user->avatar;
-
-//        $path = $request->file('img')->store('avatars', 'public');
-        $path = Storage::disk('public')->putFile('avatars', $request->file('img'));
-        try {
-            $user->update([
-                'avatar' => $path
-            ]);
-            if ($old_avatar) {
-                Storage::disk('public')->delete($old_avatar);  // Use public disk to delete
-            }
-            return $this->responseSuccess([
-                'avatar' =>  asset(Storage::url($path))
-            ]);
-        } catch (\Exception $th) {
-            return $this->responseError('There was error while updating your avatar');
+            return $this->responseError('There was error while changing your password', 500);
         }
     }
 
@@ -102,7 +77,7 @@ class InformationController
             return $this->responseSuccess();
         } catch (\Exception $e) {
             DB::rollBack();
-            return $this->responseError('There was error while updating email');
+            return $this->responseError('There was error while updating email', 500);
         }
     }
 
@@ -112,12 +87,12 @@ class InformationController
             ->where('expires_at', '>', Carbon::now())->first();
 
         if (!$changeRequest) {
-            return $this->responseError('Invalid or expired verification link!');
+            return $this->responseError('Invalid or expired verification link!', 500);
         }
         $user = $changeRequest->user;
 
         if (!$user) {
-            return $this->responseError('User not found.');
+            return $this->responseError('User not found.', 500);
         }
 
         try {
@@ -129,7 +104,7 @@ class InformationController
             return $this->responseSuccess();
         } catch (\Exception $e) {
             DB::rollBack();
-            return $this->responseError('Something went wrong.');
+            return $this->responseError('Something went wrong.', 500);
         }
     }
 }
