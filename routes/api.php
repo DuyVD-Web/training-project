@@ -19,6 +19,7 @@ Route::prefix('/user')->name('api.user')->middleware(['auth:sanctum'])->group(fu
         Route::get('/', [InformationController::class, 'getInformation']);
         Route::put('/', [InformationController::class, 'update'])->name('.update');
         Route::put('/password', [InformationController::class, 'updatePassword'])->name('.updatePassword');
+        Route::post('/avatar', [InformationController::class, 'updateAvatar'])->name('.updateAvatar');
     });
 
     Route::post('/email', [InformationController::class, 'sendChangeEmail'])->name('.sendChangeEmail');

@@ -65,8 +65,8 @@ class SyncRoutesCommand extends Command
         $allowedPatterns = [
             '/^admin\./',           // Routes starting with 'admin.'
             '/^user\./',            // Routes starting with 'user.'
-            '/^api.admin\./', // Matches 'api.admin.something'
-            '/^api.user\./', // Matches 'api.user.something'
+            '/^api.admin/', // Matches 'api.admin.something'
+            '/^api.user/', // Matches 'api.user.something'
         ];
 
         foreach ($allowedPatterns as $pattern) {
