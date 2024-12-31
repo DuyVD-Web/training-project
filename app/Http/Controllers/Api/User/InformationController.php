@@ -70,7 +70,7 @@ class InformationController
         $old_avatar = $user->avatar;
 
 //        $path = $request->file('img')->store('avatars', 'public');
-        $path = Storage::putFile('img', $request->file('avatar'),'public');
+        $path = Storage::disk('public')->putFile('avatars', $request->file('img'));
         try {
             $user->update([
                 'avatar' => $path
