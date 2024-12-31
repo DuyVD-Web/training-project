@@ -4,8 +4,6 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Storage;
 
 class UserResource extends JsonResource
 {
@@ -18,7 +16,6 @@ class UserResource extends JsonResource
             'role' => $this->role->name,
             'phoneNumber' => $this->phone_number,
             'address'  => $this->address,
-            'avatar' => $this->avatar ? asset(Storage::url($this->avatar)) : asset(Storage::url( Config::get('constant.default_avatar'))),
         ];
     }
 }
