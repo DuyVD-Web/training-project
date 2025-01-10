@@ -19,6 +19,7 @@ class UserResource extends JsonResource
             'phoneNumber' => $this->phone_number,
             'address'  => $this->address,
             'avatar' => $this->avatar ? asset(Storage::url($this->avatar)) : asset(Storage::url( Config::get('constant.default_avatar'))),
+            'verifiedAt' => $this->email_verified_at ? $this->email_verified_at->format('Y-m-d H:i:s') : null,
         ];
     }
 }

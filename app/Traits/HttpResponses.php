@@ -33,6 +33,7 @@ trait HttpResponses
             'total' => $model->total(),
             'from' => $model->firstItem(),
             'to' => $model->lastItem(),
+            'pageSize' => $model->perPage(),
             'links' => [
                 'first' => $model->url(1),
                 'last' => $model->url($model->lastPage()),

@@ -28,7 +28,8 @@ class CreateUserRequest extends FormRequest
             'password' => 'required|min:6|confirmed',
             'phone_number' => ['regex:/^(((\+|)84)|0)(3|5|7|8|9)+([0-9]{8})\b/','nullable'],
             'address' => 'string',
-            'role_id' => 'required|exists:roles,id|integer',
+            'role' => 'required|exists:roles,name|string',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
 
