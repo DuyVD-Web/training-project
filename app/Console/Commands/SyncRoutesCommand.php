@@ -3,7 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Models\Permission;
+use App\Models\Role;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
 
 class SyncRoutesCommand extends Command
@@ -30,6 +32,8 @@ class SyncRoutesCommand extends Command
         $routes = Route::getRoutes();
         $currentRouteNames = [];
 
+        $adminRole = Role::find(Config::get("constant.admin_id"));
+
         foreach ($routes as $route) {
             $routeName = $route->getName();
 
@@ -42,6 +46,8 @@ class SyncRoutesCommand extends Command
             $existingRoute = Permission::firstOrCreate(
                 ['name' => $routeName]
             );
+
+            $adminRole->permissions()->attach($existingRoute->id, [], false);
 
             if ($existingRoute->wasRecentlyCreated) {
                 $this->info("Added new route: {$routeName}");

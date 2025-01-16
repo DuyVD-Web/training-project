@@ -8,6 +8,7 @@ use App\Models\History;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AccessHistoryController extends Controller
 {
@@ -27,12 +28,12 @@ class AccessHistoryController extends Controller
             $query->whereIn('type', $request->types);
         }
 
-        $currentYear = $request->input('year', '');
+        $year = $request->input('year', []);
         $currentMonth = $request->input('month', '');
         $currentDay = $request->input('day', '');
 
-        if ($currentYear) {
-            $query->whereYear('time', $currentYear);
+        if (!empty($year)) {
+            $query->whereIn(DB::raw('EXTRACT(YEAR FROM time)::integer'), $year);
             if ($currentMonth) {
                 $query->whereMonth('time', $currentMonth);
                 if ($currentDay) {
@@ -45,14 +46,17 @@ class AccessHistoryController extends Controller
         $sort = $request->input('sort', 'desc');
         $query->orderBy($field, $sort);
 
-        $histories = $query->paginate(HISTORY_PAGINATE);
+        $pageSize = $request->pageSize ? $request->pageSize : HISTORY_PAGINATE;
+
+        $histories = $query->paginate($pageSize);
 
         return $this->sendPaginateResponse($histories, [
             'histories' => AccessHistoryResource::collection($histories),
             'years' => $years,
-            'currentYear' => $currentYear,
             'currentMonth' => $currentMonth,
-            'currentDay' => $currentDay
+            'currentDay' => $currentDay,
+            'sort' => $sort,
+            'types' => $request->types,
         ]);
     }
 

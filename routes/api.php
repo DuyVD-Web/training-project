@@ -16,7 +16,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout')->m
 
 Route::prefix('/user')->name('api.user')->middleware(['auth:sanctum'])->group(function () {
     Route::middleware('api.check.permission')->group(function () {
-        Route::get('/', [InformationController::class, 'getInformation']);
+        Route::get('/', [InformationController::class, 'getInformation'])->name('.information');
         Route::put('/', [InformationController::class, 'update'])->name('.update');
         Route::put('/password', [InformationController::class, 'updatePassword'])->name('.updatePassword');
         Route::post('/avatar', [InformationController::class, 'updateAvatar'])->name('.updateAvatar');

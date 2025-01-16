@@ -6,6 +6,7 @@ use App\Http\Requests\ChangeAvatar;
 use App\Http\Requests\ChangeEmailRequest;
 use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\EditInfoRequest;
+use App\Http\Resources\PermissionResource;
 use App\Http\Resources\UserResource;
 use App\Models\ChangeEmailRequest as ChangeEmailModel;
 use App\Notifications\ChangeEmailNotification;
@@ -26,7 +27,8 @@ class InformationController
     {
         $user = new UserResource(Auth::user());
         return $this->responseSuccess([
-            'user' => $user
+            'user' => $user,
+            'permissions' => PermissionResource::collection($user->role->permissions),
         ]);
     }
 
@@ -69,8 +71,8 @@ class InformationController
         $user = $request->user();
         $old_avatar = $user->avatar;
 
-        $path = Storage::disk('public')->putFile('avatars', $request->file('img'));
         try {
+            $path = Storage::disk('public')->putFile('avatars', $request->file('img'));
             $user->update([
                 'avatar' => $path
             ]);

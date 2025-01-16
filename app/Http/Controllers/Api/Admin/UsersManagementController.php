@@ -18,6 +18,9 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
 class UsersManagementController extends Controller
@@ -26,12 +29,15 @@ class UsersManagementController extends Controller
 
     public function getUsers(Request $request)
     {
-        $query = User::query();
+        $query = User::query()->where('id', '!=', Auth::id());
+        if (Auth::user()->role_id !== Config::get('constant.admin_id')) {
+            $query->whereNotIn('role_id', [Config::get('constant.admin_id')]);
+        }
 
-        if ($request->has('search_query')) {
+        if ($request->has('search')) {
             $query->where(function ($query) use ($request) {
-                $query->where('name', 'LIKE', '%' . $request->search_query . '%')
-                    ->orWhere('email', 'LIKE', '%' . $request->search_query . '%');
+                $query->where('name', 'LIKE', '%' . $request->search . '%')
+                    ->orWhere('email', 'LIKE', '%' . $request->search . '%');
             });
         }
 
@@ -51,11 +57,16 @@ class UsersManagementController extends Controller
             $query->join('roles', 'users.role_id', '=', 'roles.id')
                 ->orderBy('roles.name', $sort)
                 ->select('users.*');
+        } else if ($field === 'verifiedAt') {
+            $query->orderBy("email_verified_at", $sort);
         } else {
             $query->orderBy($field, $sort);
         }
 
-        $users = $query->paginate(6);
+
+        $pageSize = $request->pageSize ? $request->pageSize : 5;
+
+        $users = $query->paginate($pageSize);
         return $this->sendPaginateResponse($users,[
             'users' => UserResource::collection($users),
         ]);
@@ -86,9 +97,22 @@ class UsersManagementController extends Controller
     {
         $validated = $request->validated();
         try {
-            $user = User::where('id', $userId)->update($validated);
+            $roleMapping = [
+                'admin' => Config::get('constant.admin_id'),
+                'manager' => Config::get('constant.manager_id'),
+                'user' => Config::get('constant.user_id')
+            ];
+
+            $validated['role_id'] = $roleMapping[$validated['role']] ?? null;
+            if ($validated['role_id'] === null) {
+                throw new Exception("Invalid role selected");
+            }
+            unset($validated['role']); // Better than setting to null
+            $user = User::findOrFail($userId);
+            $user->update($validated);
+
             return $this->responseSuccess([
-                'user' => new UserResource(User::where('id', $userId)->first()),
+                'user' => new UserResource($user),
             ]);
         } catch (Exception $e) {
             return $this->responseError("There was an error occurred in the process");
@@ -118,6 +142,23 @@ class UsersManagementController extends Controller
     {
         $validated = $request->validated();
         try {
+            $roleMapping = [
+                'admin' => Config::get('constant.admin_id'),
+                'manager' => Config::get('constant.manager_id'),
+                'user' => Config::get('constant.user_id')
+            ];
+
+            $validated['role_id'] = $roleMapping[$validated['role']] ?? null;
+            if ($validated['role_id'] === null) {
+                throw new Exception("Invalid role selected");
+            }
+            unset($validated['role']);
+
+            if ($request->hasFile('avatar')) {
+                $path = Storage::disk('public')->putFile('avatars', $request->file('avatar'));
+                $validated['avatar'] = $path;
+            }
+
             User::create($validated);
             return $this->responseSuccess();
         } catch (Exception $e) {

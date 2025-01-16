@@ -18,12 +18,12 @@ class PermissionManagementController extends Controller
 
     public function index()
     {
-        $roles = Role::where('name', '!=', UserRole::Admin)->with('permissions')->get();
-        $allPermissions = Permission::all();
+        $roles = Role::where('name', '!=', UserRole::Admin)
+            ->with('permissions')
+            ->get();
 
         return $this->responseSuccess([
             'roles' => RoleResource::collection($roles),
-            'permissions' => PermissionResource::collection($allPermissions),
         ]);
     }
 

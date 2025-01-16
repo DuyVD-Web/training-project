@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Auth;
 use App\Enums\AccessType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthRequest;
+use App\Http\Resources\PermissionResource;
 use App\Http\Resources\UserResource;
 use App\Models\History;
 use App\Models\User;
@@ -51,8 +52,10 @@ class AuthController extends Controller
             ]);
             DB::commit();
 
+
             return $this->responseSuccess([
                 'user' => $user,
+                'permissions' => PermissionResource::collection($user->role->permissions),
                 'token' => $user->createToken('API Token')->plainTextToken,
             ]);
         } catch (Exception $e) {
