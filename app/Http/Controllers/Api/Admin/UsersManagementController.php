@@ -31,7 +31,7 @@ class UsersManagementController extends Controller
     {
         $query = User::query()->where('id', '!=', Auth::id());
         if (Auth::user()->role_id !== Config::get('constant.admin_id')) {
-            $query->whereNotIn('role_id', Config::get('constant.admin_id'));
+            $query->whereNotIn('role_id', [Config::get('constant.admin_id')]);
         }
 
         if ($request->has('search')) {

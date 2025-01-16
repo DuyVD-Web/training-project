@@ -27,7 +27,7 @@ class CreateUserRequest extends FormRequest
             'email' => 'required|email:rfc,dns|unique:users,email',
             'password' => 'required|min:6|confirmed',
             'phone_number' => ['regex:/^(((\+|)84)|0)(3|5|7|8|9)+([0-9]{8})\b/','nullable'],
-            'address' => 'string',
+            'address' => 'string|nullable',
             'role' => 'required|exists:roles,name|string',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
