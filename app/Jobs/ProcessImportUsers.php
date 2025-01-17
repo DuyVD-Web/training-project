@@ -18,7 +18,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ProcessImportUsers implements ShouldQueue
 {
-    use Queueable, InteractsWithQueue, Queueable, SerializesModels;
+    use Queueable, InteractsWithQueue, SerializesModels;
 
     protected $filePath;
     protected $importId;
