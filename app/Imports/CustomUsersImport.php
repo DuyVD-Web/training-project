@@ -7,26 +7,30 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Concerns\ToCollection;
 
-class CustomUsersImport implements toCollection
+class CustomUsersImport implements ToCollection
 {
 
     private array $errors = [];
+
+    private array $validRoleIds;
+
+    public function __construct()
+    {
+        $this->validRoleIds = DB::table('roles')->pluck('id')->toArray();
+    }
 
     public function collection(Collection $rows): void
     {
         $rows = $rows->slice(1);
 
-        // Validate all rows first
         $validator = Validator::make($rows->toArray(), $this->rules());
 
         if ($validator->fails()) {
-
-            // Log validation errors
             $this->errors = collect($validator->errors()->getMessages())
                 ->flatMap(function ($messages, $attribute) {
-                    // Extract row and field indices using regex
                     if (!preg_match('/(\d+)\.(\d+)/', $attribute, $matches)) {
                         return [];
                     }
@@ -86,7 +90,7 @@ class CustomUsersImport implements toCollection
             '*.0' => 'required|string|max:255', // name
             '*.1' => 'required|email:rfc,dns|unique:users,email', // email
             '*.2' => 'required|string|min:6', // password
-            '*.3' => 'required|exists:roles,id', // role_id
+            '*.3' => ['required', Rule::in($this->validRoleIds)],
             '*.4' => ['nullable', 'regex:/^(((\+|)84)|0)(3|5|7|8|9)+([0-9]{8})\b/'], // phone_number
             '*.5' => 'nullable|string|max:500', // address
         ];

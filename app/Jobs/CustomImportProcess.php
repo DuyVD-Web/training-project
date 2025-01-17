@@ -18,7 +18,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class CustomImportProcess implements ShouldQueue
 {
-    use Queueable, InteractsWithQueue, Queueable, SerializesModels;
+    use Queueable, InteractsWithQueue, SerializesModels;
 
     protected $filePath;
     protected $importId;
@@ -65,8 +65,8 @@ class CustomImportProcess implements ShouldQueue
                     'errors' => $errors,
                 ]);
             }
-            Storage::delete($this->filePath);
         } catch (\Exception $e) {
+            DB::rollBack();
             ImportStatus::find($this->importId)->update([
                 'status' => Status::Failed,
                 'message' => $e->getMessage(),
@@ -76,7 +76,8 @@ class CustomImportProcess implements ShouldQueue
                 'file' => $this->filePath,
                 'error' => $e->getMessage(),
             ]);
-
+        } finally {
+            Storage::delete($this->filePath);
         }
     }
 }
